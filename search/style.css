@@ -1,0 +1,20 @@
+.container {
+    position: relative;
+    background-color: royalblue;
+    height: 200px;
+
+}
+
+.searchBox {
+    display: flex;
+    flex-wrap: wrap;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: red;
+}
+
+.Buttons {
+    float: right;
+    display: inline-block;
+}
