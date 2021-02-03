@@ -6,22 +6,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="Buttons">
-        <a href="imageSearch.html">
-            <input type="button" value="Image Search">
-        </a>
-        <a href="advancedSearch.html">
-            <input type="button" value="Advanced Search">
-        </a>
-    </div>
-    <div class="container">
-        <div class="searchBox">
-            <form action="https://google.com/search"></form>
-                <input style="width: 100px; height: 20px;" type="text" name="q">
-                <input type="submit" value="Google Search">
-            </form>
+    <div id="container">
+        <div id="topnav">
+            <div id="Buttons">
+                <a href="imageSearch.html">
+                    <input type="button" value="Image Search">
+                </a>
+                <a href="advancedSearch.html">
+                    <input type="button" value="Advanced Search">
+                </a>
+            </div>
+        </div>
+        <div id="searchbar">
+            <div class="searchBox">
+                <form action="https://google.com/search">
+                    <input type="text" name="q">
+                    <input type="submit" value="Google Search">
+                </form>
+            </div>
+        </div>
+        <div id="bottombar">
+            <div id="bottomButtons">
+                <a href="https://policies.google.com/privacy?hl=en&fg=1">Privacy</a>
+                <a href="https://policies.google.com/terms?hl=en&fg=1">Terms</a>
+            </div>
         </div>
     </div>
-    
 </body>
 </html>
