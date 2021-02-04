@@ -8,20 +8,27 @@
 <body>
     <div id="container">
         <div id="topnav">
-            <div id="Buttons">
-                <a href="imageSearch.html">
-                    <input type="button" value="Image Search">
-                </a>
-                <a href="advancedSearch.html">
-                    <input type="button" value="Advanced Search">
-                </a>
+            <div id="Links">
+                <div class="linkAnchors">
+                    <a class="anchors" href="imageSearch.html">Image Search</a>
+                </div>
+                <div class="linkAnchors">
+                    <a class="anchors" href="advancedSearch.html">Advanced Search</a>
+                </div>
             </div>
+        </div>
+        <div id="imageSection">
+            <div id="imageblock"><img id="image" src="Images/googlelogo.png"></div>
         </div>
         <div id="searchbar">
             <div class="searchBox">
                 <form action="https://google.com/search">
-                    <input type="text" name="q">
-                    <input type="submit" value="Google Search">
+                    <div id="search" class="linkAnchors">
+                        <input id="inputtext" type="text" name="q">
+                    </div>
+                    <div class="linkAnchors">
+                        <input id="centerbutton" type="submit" value="Google Search">
+                    </div>
                 </form>
             </div>
         </div>
