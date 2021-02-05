@@ -8,7 +8,7 @@
 <body>
     <div id="container">
         <div id="topnav">
-            <div id="Links">
+            <div class="Links">
                 <div class="linkAnchors">
                     <a class="anchors" href="imageSearch.html">Image Search</a>
                 </div>
@@ -17,25 +17,34 @@
                 </div>
             </div>
         </div>
-        <div id="imageSection">
+        <div class="flexProp heightProp">
             <div id="imageblock"><img id="image" src="Images/googlelogo.png"></div>
         </div>
-        <div id="searchbar">
-            <div class="searchBox">
+        <div id="searchbar" class="flexProp heightProp">
+            <div id="searchBox">
                 <form action="https://google.com/search">
                     <div id="search" class="linkAnchors">
                         <input id="inputtext" type="text" name="q">
                     </div>
-                    <div class="linkAnchors">
-                        <input id="centerbutton" type="submit" value="Google Search">
+                    <div class="flexProp">
+                        <div class="linkAnchors">
+                            <input class="anchors" type="submit" value="Google Search">
+                        </div>
+                        <div class="linkAnchors">
+                            <input class="anchors" type="submit" name="btnI" value="I'm Feeling Lucky">
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
         <div id="bottombar">
-            <div id="bottomButtons">
-                <a href="https://policies.google.com/privacy?hl=en&fg=1">Privacy</a>
-                <a href="https://policies.google.com/terms?hl=en&fg=1">Terms</a>
+            <div class="Links">
+                <div class="linkAnchors">
+                    <a class="anchors" href="https://policies.google.com/privacy?hl=en&fg=1">Privacy</a>
+                </div>
+                <div class="linkAnchors">
+                    <a class="anchors" href="https://policies.google.com/terms?hl=en&fg=1">Terms</a>
+                </div>
             </div>
         </div>
     </div>
