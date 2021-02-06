@@ -61,3 +61,42 @@
     color: black;
     text-decoration: none;
 }
+
+#advsearch {
+    height: 80%;
+}
+
+.advSearchBlocks {
+    display: inline-block;
+    vertical-align: middle;
+    height: 30px;
+    /* padding: 5px; */
+}
+
+.advBlocks {
+    vertical-align: baseline;
+    height: 42px;
+}
+
+.widthCol1 {
+    width: 16%;
+}
+
+.widthCol2 {
+    width: 100%;
+}
+
+.widthDiv {
+    width: 40%;
+}
+
+#btn {
+    background-color: #4d90fe;
+    color: #fff;
+    border: 1px solid #3079ed;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0 12px;
+    height: 30px;
+}
