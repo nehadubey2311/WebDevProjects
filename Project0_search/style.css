@@ -23,6 +23,12 @@
     aspect-ratio: auto 272 / 92;
 }
 
+#imageimg {
+    height: 110px;
+    width: 280px;
+    aspect-ratio: auto 280 / 110;
+}
+
 #searchbar {
     border: 4px;
     border-color: black;
@@ -31,6 +37,7 @@
 #searchBox {
     width: 40%;
 }
+
 #inputtext {
     width: 100%;
     outline: none;
@@ -52,14 +59,19 @@
     padding: 10px;
 }
 
+a:hover {
+    text-decoration: underline;
+}
+
 .flexProp {
     display: flex;
     justify-content: center;
 }
 
-.anchors {
+a {
     color: black;
     text-decoration: none;
+    font: 13px Roboto,RobotoDraft,Arial,sans-serif;
 }
 
 #advsearch {
@@ -99,4 +111,13 @@
     font-weight: bold;
     padding: 0 12px;
     height: 30px;
+}
+
+#text {
+    color: #d93025;
+    font: 20px Arial, Helvetica, sans-serif;
+}
+
+#border {
+    border-bottom: 1px solid #ebebeb;
 }
