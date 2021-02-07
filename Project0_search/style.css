@@ -82,12 +82,13 @@ a {
     display: inline-block;
     vertical-align: middle;
     height: 30px;
-    /* padding: 5px; */
+    font-size: 13px;
 }
 
 .advBlocks {
     vertical-align: baseline;
     height: 42px;
+    font: 16px arial,sans-serif;
 }
 
 .widthCol1 {
