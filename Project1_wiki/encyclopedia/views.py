@@ -2,14 +2,17 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django import forms
+from django.db import models
+import re
 import markdown2
+import random
 
 from . import util
 
 
 class AddPageForm(forms.Form):
     formData = forms.CharField(label="Page Title")
-    content = forms.CharField(label="Content", widget=forms.Textarea)
+    content = forms.CharField(label="Content", widget=forms.Textarea(attrs={'rows':5,'cols':20}))
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -17,17 +20,19 @@ def index(request):
         "entries": util.list_entries()
     })
 
-def search(request):
-    # return HttpResponse("Got here")
+def searchString(request):
     if request.method == "POST":
         # accept user input string and find entry if exists
         searchString = request.POST.get('q')
         if util.get_entry(searchString):
             return HttpResponseRedirect(reverse('encyclopedia:wikipages', kwargs={'pageTitle':searchString}))
         else:
+            # find entries that match with keyword entered by making case insensitive search
+            entries = util.list_entries()
+            patternMatch = [entry for entry in entries if re.search(searchString, entry, re.IGNORECASE)]
             return render(request, "encyclopedia/index.html", {
                 "header": "Search Results",
-                "entries": util.list_entries()
+                "entries": patternMatch
             })
 
 def wikiPage(request, pageTitle):
@@ -64,3 +69,19 @@ def addPage(request):
         return render(request, "encyclopedia/addPage.html", {
             "form": AddPageForm()
         })
+
+def editPage(request):
+    return render(request, "encyclopedia/addPage.html", {
+            "form": AddPageForm({
+                'formData':'sample title', 
+                'content': util.get_entry("CSS")
+            })
+        })
+
+def randomPage(request):
+    entryList = util.list_entries()
+    randomSelection = random.choice(entryList)
+    return render(request, "encyclopedia/wikiPage.html", {
+        "content": markdown2.markdown(util.get_entry(randomSelection)),
+        "title": randomSelection
+    }) 

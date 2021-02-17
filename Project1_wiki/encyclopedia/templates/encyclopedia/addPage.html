@@ -7,7 +7,10 @@
 {% block body %}
     <form action="{% url 'encyclopedia:addPage' %}" method="post">
         {% csrf_token %}
-        {{ form|linebreaks|safe }}
-        <input type="submit">
+        {{ form|safe }}
     </form>
+{% endblock %}
+
+{% block editLink %}
+    <input type="submit">
 {% endblock %}

@@ -7,3 +7,7 @@
 {% block body %}
     <h1>{{ content | safe }}</h1>
 {% endblock %}
+
+{% block editLink %}
+    <a href="{% url 'encyclopedia:editPage' %}">Edit Page</a>
+{% endblock %}
