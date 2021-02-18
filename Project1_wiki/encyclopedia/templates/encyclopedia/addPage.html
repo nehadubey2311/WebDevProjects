@@ -1,17 +1,19 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    Add Page
+    {{ title }}
 {% endblock %}
 
 {% block body %}
     <form action="{% url 'encyclopedia:addPage' %}" method="post">
         {% csrf_token %}
-        <!-- Only display title section when content has no data. This
+        <!-- Display title section only when content has no data. This
          would prevent from displaying 'title' when editing existing entry -->
         {% if not form.content.value %}
+            {{form.formData.label_tag}}
             {{form.formData}}
         {% endif %}
+        {{form.content.label_tag}}
         {{form.content}}
         <input type="submit">
     </form>

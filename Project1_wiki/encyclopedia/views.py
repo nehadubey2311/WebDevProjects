@@ -20,7 +20,7 @@ class AddPageForm(forms.Form):
         label="Content",
         widget=forms.Textarea(
             attrs={'rows': 5, 'cols': 20,
-                   'class': 'form-control-file form-control-sm-6'}))
+                   'class': 'form-control form-control-sm'}))
 
 
 def index(request):
@@ -86,6 +86,7 @@ def addPage(request):
     # request method would be GET when `addpage` is first called
     if request.method == "GET":
         return render(request, "encyclopedia/addPage.html", {
+            "title": "Add Page",
             "form": AddPageForm()
         })
 
@@ -95,6 +96,7 @@ def editPage(request, title):
         # reusing addPage form but only displaying content
         # so as to not let user edit title of page
         return render(request, "encyclopedia/addPage.html", {
+                "title": "Edit Page",
                 "form": AddPageForm({
                     'content': util.get_entry(title)
                 })
