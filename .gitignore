@@ -24,3 +24,8 @@ Icon\r\r
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Neha
+db.sqlite*
+__pycache__
+.vscode
