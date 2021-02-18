@@ -7,7 +7,12 @@
 {% block body %}
     <form action="{% url 'encyclopedia:addPage' %}" method="post">
         {% csrf_token %}
-        {{ form|safe }}
+        <!-- Only display title section when content has no data. This
+         would prevent from displaying 'title' when editing existing entry -->
+        {% if not form.content.value %}
+            {{form.formData}}
+        {% endif %}
+        {{form.content}}
         <input type="submit">
     </form>
 {% endblock %}
