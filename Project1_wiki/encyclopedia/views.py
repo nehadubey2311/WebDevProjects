@@ -25,7 +25,8 @@ def searchString(request):
         # accept user input string and find entry if exists
         searchString = request.POST.get('q')
         if util.get_entry(searchString):
-            return HttpResponseRedirect(reverse('encyclopedia:wikipages', kwargs={'pageTitle':searchString}))
+            return HttpResponseRedirect(reverse('encyclopedia:wikipages', \
+                kwargs={'pageTitle':searchString}))
         else:
             # find entries that match with keyword entered by making case insensitive search
             entries = util.list_entries()
@@ -70,13 +71,14 @@ def addPage(request):
             "form": AddPageForm()
         })
 
-def editPage(request):
-    return render(request, "encyclopedia/addPage.html", {
-            "form": AddPageForm({
-                'formData':'sample title', 
-                'content': util.get_entry("CSS")
+def editPage(request, title):
+    if request.method == "GET":
+        return render(request, "encyclopedia/addPage.html", {
+                "form": AddPageForm({
+                    'formData':'sample title', 
+                    'content': util.get_entry(title)
+                })
             })
-        })
 
 def randomPage(request):
     entryList = util.list_entries()
@@ -85,3 +87,4 @@ def randomPage(request):
         "content": markdown2.markdown(util.get_entry(randomSelection)),
         "title": randomSelection
     }) 
+    
