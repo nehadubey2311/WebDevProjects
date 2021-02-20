@@ -12,7 +12,7 @@ from . import util
 
 
 class AddPageForm(forms.Form):
-    formData = forms.CharField(
+    formTitle = forms.CharField(
         label="Page Title",
         widget=forms.TextInput(
             attrs={'class': 'form-control-file form-control-sm'}))
@@ -70,7 +70,7 @@ def addPage(request):
         form = AddPageForm(request.POST)
         # validate if data is valid
         if form.is_valid():
-            title = form.cleaned_data["formData"]
+            title = form.cleaned_data["formTitle"]
             content = form.cleaned_data["content"]
             # Save new page if entry does not already exist
             if not util.get_entry(title):
