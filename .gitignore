@@ -26,6 +26,6 @@ Temporary Items
 .apdisk
 
 # Neha
-db.sqlite*
+#db.sqlite*
 __pycache__
 .vscode
