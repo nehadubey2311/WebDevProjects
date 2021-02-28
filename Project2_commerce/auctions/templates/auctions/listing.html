@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+{{ added_by }}
+{% block body %}
+    <div id="container">
+        <div><p class="h2">{{ listing.title }}</p></div>
+        <img src="" class="img-fluid col-sm-12" alt="listing image">
+        <div><p class="h6 my-3">{{ listing.description }}</p></div>
+        <p>Price: ${{ listing.starting_bid }}</p>
+        <a class="btn btn-primary" href="#" role="button">Place Bid</a>
+        <div>
+            <h3>
+                Details:
+            </h3>
+            <ul>
+                <li>Listed by: {{ added_by }}</li>
+                <li>Category: {{ listing.category }}</li>
+            </ul>
+        </div>
+        <!-- <div class="card flex-row flex-wrap">
+            <div class="card-header border-0">
+                <p class="h2">{{ listing.title }}</p>
+            </div>
+            <div class="card-block px-2">
+                <img class="card-img-bottom" src="//placehold.it/350" alt="">
+            </div>
+            <div class="w-100"></div>
+        </div> -->
+    </div>
+{% endblock %}

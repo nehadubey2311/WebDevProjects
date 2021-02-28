@@ -1,0 +1,12 @@
+Listings model error in views.py
+Image upload/save/display for listings
+Custom css rules with bootstrap
+no models from admin view
+
+admin/admin
+nehadubey
+neha
+
+TODOs:
+watchlist column 
+add and set current_bid
