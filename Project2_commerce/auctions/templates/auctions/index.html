@@ -9,11 +9,10 @@
                     <img src="//placehold.it/200" alt="">
                 </div>
                 <div class="card-block px-2">
-                    <a href="{% url 'auctions:listing' listing.id%}"><h4 class="card-title">{{ listing.title }}</h4></a>
+                    <a href="{% url 'auctions:listing' listing.id %}"><h4 class="card-title">{{ listing.title }}</h4></a>
                     <p class="card-text">{{ listing.description }}</p>
                     <p class="card-text">Price: ${{ listing.starting_bid }}</p>
                     <p class="card-text text-small">{{ listing.created }}</p>
-                    <a href="#" class="btn btn-primary">Bid</a>
                 </div>
                 <div class="w-100"></div>
                 <div class="card-footer w-100 text-muted">
