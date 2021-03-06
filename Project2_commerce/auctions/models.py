@@ -10,6 +10,14 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
+class Category(models.Model):
+    """
+    Create categories to be assigned to listings
+    """
+    category = models.CharField(max_length=20)
+
+
 class Listing(models.Model):
     """
     Creates Listing model
@@ -21,7 +29,8 @@ class Listing(models.Model):
     starting_bid = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
     listing_image = models.URLField()
-    category = models.CharField(max_length=20, default=None)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, 
+                                null=True, related_name="list_category")
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlist")
     is_active = models.BooleanField(default=True)
     winner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing_win",

@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from auctions.models import User, Listing, Bid, Comment
+from auctions.models import User, Listing, Bid, Comment, Category
 from . import util
 
 
@@ -32,7 +32,8 @@ class CreateListingForm(forms.Form):
             attrs={'class': 'form-control-file form-control-sm'}))
     category = forms.CharField(
         label="Listing Category",
-        widget=forms.TextInput(
+        widget=forms.Select(
+            choices=Category.objects.values_list(),
             attrs={'class': 'form-control-file form-control-sm'}))
 
 
@@ -120,7 +121,7 @@ def create_listing(request):
             starting_bid = form.cleaned_data["starting_bid"]
             listing_image = form.cleaned_data["listing_image"]
             category = form.cleaned_data["category"]
-            added_by = request.user
+            added_by = request.user.id
             util.save_listing(title, description, starting_bid, listing_image, category, added_by)
             return render(request, "auctions/index.html", {
                 "listings": Listing.objects.filter(is_active=True)
@@ -134,17 +135,20 @@ def listing(request, list_id):
     if request.method == "GET":
         obj = Listing.objects.get(pk=list_id)
         added_by_user = obj.user_id
+        watcher = ""
         # check if user is already watching a listing
         # 'watcher' will return a querySet if user is a watcher
         # else none
-        user = User.objects.get(id=int(request.user.id))
-        watcher = user.watchlist.filter(id=list_id)
+        if request.user.id:
+            user = User.objects.get(id=int(request.user.id))
+            watcher = user.watchlist.filter(id=list_id)
         return render(request, "auctions/listing.html", {
             "listing": obj,
             "added_by": User.objects.values_list('username', flat=True).get(id=added_by_user),
             "watcher": watcher,
             "commentForm": CommentForm,
-            "comments": Comment.objects.filter(listing=list_id)
+            "comments": Comment.objects.filter(listing=list_id),
+            "category": Category.objects.values_list('category', flat=True).get(pk=obj.category.id)
         })
 
 
@@ -222,4 +226,22 @@ def user_watchlist(request):
     """
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.filter(watchers=request.user)
+    })
+
+def category(request):
+    try:
+        categories = Category.objects.values_list()
+        category = [x[1] for x in categories]
+        return render(request, "auctions/categories.html", {
+            "categories": category
+        })
+    except:
+        return render(request, "auctions/message_banner.html", {
+                "message": "Sorry categories could not be retrieved, please try again !!"
+            })
+
+def category_listing(request, category):
+    category_id = Category.objects.get(category=category)
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.filter(category=category_id.id)
     })

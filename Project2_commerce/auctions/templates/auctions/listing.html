@@ -45,14 +45,16 @@
             </h3>
             <ul>
                 <li>Listed by: {{ added_by }}</li>
-                <li>Category: {{ listing.category }}</li>
+                <li>Category: {{ category }}</li>
             </ul>
         </div>
-        <form action="{% url 'auctions:comments' listing.id %}" method="post">
-            {% csrf_token %}
-            {{ commentForm }}
-            <input class="my-3 btn-primary" type="submit">
-        </form>
+        {% if user.is_authenticated %}
+            <form action="{% url 'auctions:comments' listing.id %}" method="post">
+                {% csrf_token %}
+                {{ commentForm }}
+                <input class="my-3 btn-primary" type="submit">
+            </form>
+        {% endif %}
         <div class="card">
             <div class="card-body">
                 <h2>{{ comments.count }} comments</h2>

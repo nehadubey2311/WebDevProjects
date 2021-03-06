@@ -9,9 +9,10 @@ TODOs:
 image/url requirement
 class w-6 for images
 add error checking "page not found", etc
-update bid error to be more user friendly, page redirect link, last bid amount displayed
+add/update bid error to be more user friendly, page redirect link, last bid amount displayed
 use get_object_or_404()
 pylint
+pycodestyles
 
 
 03/04:

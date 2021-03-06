@@ -5,7 +5,7 @@ def save_listing(title, description, starting_bid, listing_image, category, adde
     Save 'listing' while creating new
     """
     listing = Listing(title=title, description=description, listing_image=listing_image,
-                      starting_bid=starting_bid, category=category, list_id=added_by)
+                      starting_bid=starting_bid, category_id=category, user_id=added_by)
     listing.save()
 
 
