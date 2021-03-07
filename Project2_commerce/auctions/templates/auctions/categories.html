@@ -5,7 +5,7 @@
 <div class="card card-body" style="width: 18rem;">
     <ul class="list-group list-group-flush">
         {% for category in categories %}
-        <li class="list-group-item"><a href="{% url 'auctions:cat_listing' category %}">
+        <li class="list-group-item"><a href="{% url 'auctions:category_listing' category %}">
             {{ category }}</a></li>
         {% endfor %}
     </ul>

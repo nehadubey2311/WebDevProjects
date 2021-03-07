@@ -145,6 +145,7 @@ def create_listing(request):
             category = form.cleaned_data["category"]
             added_by = request.user.id
 
+            # try saving listing
             try:
                 util.save_listing(title, description, starting_bid,
 
@@ -342,7 +343,6 @@ def category_listing(request, category):
     Display listings that belong to a specific category
     """
     category_id = Category.objects.get(category=category)
-
 
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.filter(category=category_id.id).
