@@ -5,6 +5,7 @@ and returns a Web response
 
 from django import forms
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -35,6 +36,7 @@ class CreateListingForm(forms.Form):
             attrs={"class": "form-control-file form-control-sm"}))
     listing_image = forms.CharField(
         label="Listing Image URL",
+        required=False,
         widget=forms.TextInput(
             attrs={"class": "form-control-file form-control-sm"}))
     category = forms.CharField(
@@ -62,8 +64,9 @@ def index(request):
     # Use complex lookup with Q object to check if listing is active
     # or listing has been won by requesting user, only then display it
     user = request.user.id
+    query = Q(is_active=True) | Q(winner=user)
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.filter(Q(is_active=True) | Q(winner=user))
+        "listings": Listing.objects.filter(query)
     })
 
 
@@ -128,6 +131,7 @@ def register(request):
     return render(request, "auctions/register.html")
 
 
+@login_required
 def create_listing(request):
     """
     Create a new listing
@@ -145,15 +149,16 @@ def create_listing(request):
             category = form.cleaned_data["category"]
             added_by = request.user.id
 
+            # query to render active listings
+            query = Q(is_active=True) | Q(winner=request.user.id)
+
             # try saving listing
             try:
                 util.save_listing(title, description, starting_bid,
 
                                   listing_image, category, added_by)
                 return render(request, "auctions/index.html", {
-                    "listings": Listing.objects.filter(
-                                Q(is_active=True) |
-                                Q(winner=request.user.id))
+                    "listings": Listing.objects.filter(query)
                 })
             except ValueError:
                 return render(request, "auctions/message_banner.html", {
@@ -173,61 +178,59 @@ def listing(request, list_id):
     Display details for a specific listing
     identified by listing id
     """
-    if request.method == "GET":
-        obj = Listing.objects.get(pk=list_id)
-        added_by_user = obj.user_id
-        watcher = ""
+    obj = Listing.objects.get(pk=list_id)
+    added_by_user = obj.user_id
+    watcher = ""
 
-        # check if user is already watching a listing
-        # 'watcher' will return a querySet if user is a watcher
-        # else 'none'
-        if request.user.id:
-            user = User.objects.get(id=int(request.user.id))
-            watcher = user.watchlist.filter(id=list_id)
+    # check if user is already watching a listing
+    # 'watcher' will return a querySet if user is a watcher
+    # else 'none'
+    if request.user.id:
+        user = User.objects.get(id=int(request.user.id))
+        watcher = user.watchlist.filter(id=list_id)
 
-        return render(request, "auctions/listing.html", {
-            "listing": obj,
-            "added_by": User.objects.values_list(
-                        "username", flat=True).get(id=added_by_user),
-            "watcher": watcher,
-            "comment_form": CommentForm,
-            "comments": Comment.objects.filter(listing=list_id),
-            "category": Category.objects.values_list(
-                        "category", flat=True).get(pk=obj.category.id)
-        })
-    return None
+    return render(request, "auctions/listing.html", {
+        "listing": obj,
+        "added_by": User.objects.values_list(
+                    "username", flat=True).get(id=added_by_user),
+        "watcher": watcher,
+        "comment_form": CommentForm,
+        "comments": Comment.objects.filter(listing=list_id),
+        "category": Category.objects.values_list(
+                    "category", flat=True).get(pk=obj.category.id)
+    })
 
 
+@login_required
 def bid(request, list_id):
     """
     Add bid for a listing
     """
-    if request.method == "POST":
-        try:
-            # Get current and user submitted bid to compare
-            current_bid = Listing.objects.get(pk=list_id).bid
-            user_bid = int(request.POST["bid"])
+    try:
+        # Get current and user submitted bid to compare
+        current_bid = Listing.objects.get(pk=list_id).bid
+        user_bid = int(request.POST["bid"])
 
-            if not user_bid > current_bid:
-                return render(request, "auctions/message_banner.html", {
-                    "message": "Bid amount entered was lower than last bid, \
-                                please try again !!"
-                })
-
-            # Try saving user bid to bid model
-            util.save_bid(list_id, request.user.id,
-                          user_bid, current_bid)
-            return HttpResponseRedirect(reverse("auctions:listing",
-                                                args=(list_id,)))
-        except ValueError:
+        if not user_bid > current_bid:
             return render(request, "auctions/message_banner.html", {
-                "message": "Bid amount entered was not valid, \
+                "message": "Bid amount entered was lower than last bid, \
                             please try again !!"
             })
-    return None
+
+        # Try saving user bid to bid model
+        util.save_bid(list_id, request.user.id,
+                      user_bid, current_bid)
+        return HttpResponseRedirect(reverse("auctions:listing",
+                                            args=(list_id,)))
+    except ValueError:
+        return render(request, "auctions/message_banner.html", {
+            "message": "Bid amount entered was not valid, \
+                        please try again !!"
+        })
 
 
-def watchlist(request, list_id):
+@login_required
+def add_watchlist(request, list_id):
     """
     This is to add a Listing to user's watchlist
     """
@@ -244,6 +247,7 @@ def watchlist(request, list_id):
         })
 
 
+@login_required
 def remove_watchlist(request, list_id):
     """
     Remove a listing from watchlist
@@ -261,6 +265,7 @@ def remove_watchlist(request, list_id):
         })
 
 
+@login_required
 def close_listing(request, list_id):
     """
     Close the listing.
@@ -274,11 +279,13 @@ def close_listing(request, list_id):
     except:
         user = request.user
 
+    # query to render active listings
+    query = Q(is_active=True) | Q(winner=request.user.id)
+
     try:
         util.close_listing(list_id, user)
         return render(request, "auctions/index.html", {
-                "listings": Listing.objects.filter(Q(is_active=True) |
-                                                   Q(winner=request.user.id))
+                "listings": Listing.objects.filter(query)
         })
     except:
         return render(request, "auctions/message_banner.html", {
@@ -286,28 +293,27 @@ def close_listing(request, list_id):
         })
 
 
+@login_required
 def comments(request, list_id):
     """
     Adding user comments to listing
     """
-    if request.method == "POST":
-        # Get user id and submitted comment from form
-        user = request.user.id
-        comment = request.POST["comment"]
+    # Get user id and submitted comment from form
+    user = request.user.id
+    comment = request.POST["comment"]
 
-        try:
-            util.save_comment(list_id, user, comment)
-            return HttpResponseRedirect(reverse("auctions:listing",
-                                                args=(list_id,)))
-        except:
-            return render(request, "auctions/message_banner.html", {
-                "message": "Sorry comment could not be added, \
-                    please try again !!"
-            })
-
-    return None
+    try:
+        util.save_comment(list_id, user, comment)
+        return HttpResponseRedirect(reverse("auctions:listing",
+                                            args=(list_id,)))
+    except:
+        return render(request, "auctions/message_banner.html", {
+            "message": "Sorry comment could not be added, \
+                please try again !!"
+        })
 
 
+@login_required
 def user_watchlist(request):
     """
     Render a user's watchlist. This view re-uses
@@ -344,7 +350,10 @@ def category_listing(request, category):
     """
     category_id = Category.objects.get(category=category)
 
+    # query to filter active listings
+    query = Q(is_active=True) | Q(winner=request.user.id)
+
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.filter(category=category_id.id).
-        filter(Q(is_active=True) | Q(winner=request.user.id))
+        filter(query)
     })

@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container">
-        <form action="{% url 'auctions:create_listing' %}" method="post">
+        <form action="{% url 'auctions:createlisting' %}" method="post">
             {% csrf_token %}
             {{ form }}
             <input class="my-3 btn-primary" type="submit">

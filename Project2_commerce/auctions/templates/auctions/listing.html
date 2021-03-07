@@ -10,21 +10,21 @@
         </div>
         <img src="{{ listing.listing_image }}" class="img-fluid col-sm-12" alt="listing image">
         <div><p class="h6 my-3">{{ listing.description }}</p></div>
-        <p><small>Price: ${{ listing.bid }}</small></p>
+        <p><strong>Price: ${{ listing.bid }}</strong></p>
         {% if user.is_authenticated %}
             <p>
                 <a class="btn btn-primary" data-toggle="collapse" href="#submitBid" 
                 role="button" aria-expanded="false" aria-controls="submitBid">Place Bid</a>
                 {% if not watcher %}
-                    <a class="btn btn-primary" href="{% url 'auctions:watchlist' listing.id %}" 
+                    <a class="btn btn-primary" href="{% url 'auctions:addwatchlist' listing.id %}" 
                     role="button">Add to watchlist</a>
                 {% endif %}
                 {% if watcher %}
-                    <a class="btn btn-primary" href="{% url 'auctions:remove_watchlist' listing.id %}" 
+                    <a class="btn btn-primary" href="{% url 'auctions:removewatchlist' listing.id %}" 
                     role="button">Remove From Watchlist</a>
                 {% endif %}
                 {% if user.username == added_by %}
-                <a class="btn btn-primary" href="{% url 'auctions:close_listing' listing.id %}" 
+                <a class="btn btn-primary" href="{% url 'auctions:closelisting' listing.id %}" 
                 role="button">Close Listing</a>
                 {% endif %}
             </p>

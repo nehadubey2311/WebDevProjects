@@ -25,11 +25,11 @@ class Listing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                                 related_name="user_listings", blank=True, null=True)
     title = models.CharField(max_length=64)
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=500)
     bid = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
-    listing_image = models.URLField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, 
+    listing_image = models.URLField(default=None, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True,
                                 null=True, related_name="list_category")
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlist")
     is_active = models.BooleanField(default=True)
