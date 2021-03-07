@@ -8,9 +8,9 @@
                 <p class="text-success font-weight-bold">You have won this listing, Congrats !!</p>
             {% endif %}
         </div>
-        <img src="" class="img-fluid col-sm-12" alt="listing image">
+        <img src="{{ listing.listing_image }}" class="img-fluid col-sm-12" alt="listing image">
         <div><p class="h6 my-3">{{ listing.description }}</p></div>
-        <p><small>Price: ${{ listing.starting_bid }}</small></p>
+        <p><small>Price: ${{ listing.bid }}</small></p>
         {% if user.is_authenticated %}
             <p>
                 <a class="btn btn-primary" data-toggle="collapse" href="#submitBid" 
@@ -51,7 +51,7 @@
         {% if user.is_authenticated %}
             <form action="{% url 'auctions:comments' listing.id %}" method="post">
                 {% csrf_token %}
-                {{ commentForm }}
+                {{ comment_form }}
                 <input class="my-3 btn-primary" type="submit">
             </form>
         {% endif %}

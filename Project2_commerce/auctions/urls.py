@@ -10,7 +10,7 @@ urlpatterns = [
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
-    path("createlisting", views.create_listing, name="create_listing"),
+    path("create_listing", views.create_listing, name="create_listing"),
     path("listing/<int:list_id>", views.listing, name="listing"),
     path("<int:list_id>/bid", views.bid, name="bid"),
     path("watchlist/<int:list_id>", views.watchlist, name="watchlist"),
@@ -19,5 +19,5 @@ urlpatterns = [
     path("comments/<int:list_id>", views.comments, name="comments"),
     path("watchlist", views.user_watchlist, name="user_watchlist"),
     path("category", views.category, name="category"),
-    path("<str:category>", views.category_listing, name="cat_listing")
+    path("<str:category>", views.category_listing, name="cat_listing"),
 ]

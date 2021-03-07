@@ -26,7 +26,7 @@ class Listing(models.Model):
                                 related_name="user_listings", blank=True, null=True)
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=200)
-    starting_bid = models.IntegerField()
+    bid = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
     listing_image = models.URLField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, 
@@ -37,7 +37,7 @@ class Listing(models.Model):
                              default=None, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.title} : starting bid {self.starting_bid}, created on {self.created}"
+        return f"{self.title} : starting bid {self.bid}, created on {self.created}"
 
 
 class Bid(models.Model):

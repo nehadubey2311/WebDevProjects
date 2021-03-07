@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <div>Current Bid: ${{ listing.starting_bid }}</div>
+    <div>Current Bid: ${{ listing.bid }}</div>
     <form action="{% url 'auctions:bid' listing.id %}" method="post">
         {% csrf_token %}
         {{ form }}

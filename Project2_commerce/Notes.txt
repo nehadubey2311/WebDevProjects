@@ -6,18 +6,19 @@ nehadubey
 neha
 
 TODOs:
-image/url requirement
-class w-6 for images
-add error checking "page not found", etc
-add/update bid error to be more user friendly, page redirect link, last bid amount displayed
+add comments and docstring
+add new lines within functions
+single vs double quotes
 use get_object_or_404()
 pylint
 pycodestyles
+ @login_required decorator
+
+check return None
 
 
-03/04:
-categories page
 
-03/05:
-add all error checking, try/except, etc
-add comments
+class w-6 for images
+add error checking "page not found", etc
+single vs double quotes
+variable names camel vs snake case
