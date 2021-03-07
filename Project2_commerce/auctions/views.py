@@ -149,7 +149,7 @@ def create_listing(request):
             category = form.cleaned_data["category"]
             added_by = request.user.id
 
-            # query to render active listings
+            # query to render active listings on index page
             query = Q(is_active=True) | Q(winner=request.user.id)
 
             # try saving listing
@@ -183,8 +183,8 @@ def listing(request, list_id):
     watcher = ""
 
     # check if user is already watching a listing
-    # 'watcher' will return a querySet if user is a watcher
-    # else 'none'
+    # 'watcher' will have a querySet if user is a watcher
+    # else 'None'
     if request.user.id:
         user = User.objects.get(id=int(request.user.id))
         watcher = user.watchlist.filter(id=list_id)
@@ -217,7 +217,7 @@ def bid(request, list_id):
                             please try again !!"
             })
 
-        # Try saving user bid to bid model
+        # Try saving user bid to 'bid' model
         util.save_bid(list_id, request.user.id,
                       user_bid, current_bid)
         return HttpResponseRedirect(reverse("auctions:listing",
@@ -273,13 +273,14 @@ def close_listing(request, list_id):
     """
     try:
         user = Bid.objects.get(listing=list_id).user
+
     # if we reached 'except' that would indicate there was no
     # bid for the listing and the owner of the listing is
     # the highest bidder, hence they win listing
     except:
         user = request.user
 
-    # query to render active listings
+    # query to render active listings on index page
     query = Q(is_active=True) | Q(winner=request.user.id)
 
     try:

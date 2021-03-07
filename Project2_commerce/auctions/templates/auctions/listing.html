@@ -4,6 +4,7 @@
     <div class="container">
         <div>
             <p class="h2">{{ listing.title }}</p>
+            <!-- Notify in green bold text if user has won a listing -->
             {% if not listing.is_active %}
                 <p class="text-success font-weight-bold">You have won this listing, Congrats !!</p>
             {% endif %}
@@ -15,6 +16,7 @@
             <p>
                 <a class="btn btn-primary" data-toggle="collapse" href="#submitBid" 
                 role="button" aria-expanded="false" aria-controls="submitBid">Place Bid</a>
+                <!-- Switch add/remove from watchlist button if user is not/is already watching it -->
                 {% if not watcher %}
                     <a class="btn btn-primary" href="{% url 'auctions:addwatchlist' listing.id %}" 
                     role="button">Add to watchlist</a>
@@ -23,11 +25,13 @@
                     <a class="btn btn-primary" href="{% url 'auctions:removewatchlist' listing.id %}" 
                     role="button">Remove From Watchlist</a>
                 {% endif %}
+                <!-- Creator of the listing to have ability to close listing -->
                 {% if user.username == added_by %}
                 <a class="btn btn-primary" href="{% url 'auctions:closelisting' listing.id %}" 
                 role="button">Close Listing</a>
                 {% endif %}
             </p>
+            <!-- Form to enter bid -->
             <div class="collapse" id="submitBid">
                 <div class="card card-body">
                     <form action="{% url 'auctions:bid' listing.id %}" method="post">
@@ -48,6 +52,7 @@
                 <li>Category: {{ category }}</li>
             </ul>
         </div>
+        <!-- Form to add comments when user is logged in -->
         {% if user.is_authenticated %}
             <form action="{% url 'auctions:comments' listing.id %}" method="post">
                 {% csrf_token %}
@@ -55,6 +60,7 @@
                 <input class="my-3 btn-primary" type="submit">
             </form>
         {% endif %}
+        <!-- List all comments on listing -->
         <div class="card">
             <div class="card-body">
                 <h2>{{ comments.count }} comments</h2>
