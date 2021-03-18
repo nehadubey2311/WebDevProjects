@@ -23,8 +23,7 @@ function composeEmail() {
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#display-email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
-
-  // Clear out composition fields
+  
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
@@ -124,7 +123,7 @@ function displayEmail(emailId) {
   document.querySelector('#unarchive-btn').addEventListener('click', () => archiveEmail(emailId, false));
 
   // attach event listeners to reply button
-  document.querySelector('#archive-btn').addEventListener('click', () => replyEmail(emailId));
+  document.querySelector('#reply-btn').addEventListener('click', () => replyEmail(emailId));
 }
 
 function sendEmail() {
@@ -160,5 +159,29 @@ function archiveEmail(emailId, flag) {
 }
 
 function replyEmail(emailId) {
-  
+  // Show compose view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#display-email-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+
+  // GET the email
+  fetch(`/emails/${emailId}`)
+  .then(response => response.json())
+  .then(email => {
+    // populate values to email view html section
+    document.querySelector('#compose-recipients').value = email.sender;
+
+    // check if subject contains 'Re:' and form subject accordingly
+    if( ! email.subject.toLowerCase().startsWith('re:')) {
+      email.subject = 'Re: ' + email.subject;
+    }
+
+    document.querySelector('#compose-subject').value = email.subject;
+
+    // create body text
+    const emailBody = '\n\n\n\n---------------------------------------------\n\n' +
+    'on ' + email.timestamp + '  ' + email.sender + 
+    '  wrote: \n\n' + email.body;
+    document.querySelector('#compose-body').innerHTML = emailBody;
+  });
 }
