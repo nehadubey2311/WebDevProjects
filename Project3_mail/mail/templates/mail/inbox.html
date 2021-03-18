@@ -14,6 +14,20 @@
     <div id="emails-view">
     </div>
 
+    <div id="display-email-view">
+        <p><strong>From: </strong><span id="from-user"></span><br/>
+        <strong>To: </strong><span id="to-user"></span><br/>
+        <strong>Subject: </strong><span id="email-subject"></span><br/>
+        <strong>Timestamp: </strong><span id="email-time"></span><br/>
+        <button type="button" class="btn btn-sm btn-outline-primary">Reply</button>
+        <button type="button" id="archive-btn" class="btn btn-sm btn-outline-primary">Archive</button>
+        <button type="button" id="unarchive-btn" class="btn btn-sm btn-outline-primary">Un-Archive</button>
+        <hr/>
+        <pre id="email-body"></pre>
+    </p>
+        
+    </div>
+
     <div id="compose-view">
         <h3>New Email</h3>
         <form id="compose-form">
@@ -27,7 +41,7 @@
                 <input class="form-control" id="compose-subject" placeholder="Subject">
             </div>
             <textarea class="form-control" id="compose-body" placeholder="Body"></textarea>
-            <input type="submit" class="btn btn-primary"/>
+            <input type="submit" id="send-email" class="btn btn-primary"/>
         </form>
     </div>
 {% endblock %}
