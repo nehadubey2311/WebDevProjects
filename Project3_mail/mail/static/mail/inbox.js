@@ -1,25 +1,44 @@
 // Keep track of what mailbox is being displayed
-let currentMailbox = '';
+let currentMailbox = "";
+// Keep track of current email being read
+let currentEmailId = "";
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   // Use buttons to toggle between views
   document
-    .querySelector('#inbox')
-    .addEventListener('click', () => loadMailbox('inbox'));
+    .querySelector("#inbox")
+    .addEventListener("click", () => loadMailbox("inbox"));
   document
-    .querySelector('#sent')
-    .addEventListener('click', () => loadMailbox('sent'));
+    .querySelector("#sent")
+    .addEventListener("click", () => loadMailbox("sent"));
   document
-    .querySelector('#archived')
-    .addEventListener('click', () => loadMailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', composeEmail);
+    .querySelector("#archived")
+    .addEventListener("click", () => loadMailbox("archive"));
+  document.querySelector("#compose").addEventListener("click", composeEmail);
+
 
   // By default, load the inbox
-  loadMailbox('inbox');
+  loadMailbox("inbox");
 
   // Send email when user clicks submit
-  const composeForm = document.querySelector('#compose-form');
-  composeForm.addEventListener('submit', () => sendEmail());
+  document.querySelector("#compose-form").addEventListener("submit", () => sendEmail());
+
+  // Add event listeners to archive/unarchive and reply buttons
+  document
+    .querySelector("#archive-btn")
+    .addEventListener("click", () =>
+      readOrArchiveEmail(currentEmailId, "archived", true)
+    );
+
+  document
+    .querySelector("#unarchive-btn")
+    .addEventListener("click", () =>
+      readOrArchiveEmail(currentEmailId, "archived", false)
+    );
+
+  document
+    .querySelector("#reply-btn")
+    .addEventListener("click", () => replyEmail(currentEmailId));
 });
 
 /**
@@ -27,13 +46,13 @@ document.addEventListener('DOMContentLoaded', function () {
  */
 function composeEmail() {
   // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#display-email-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector("#emails-view").style.display = "none";
+  document.querySelector("#display-email-view").style.display = "none";
+  document.querySelector("#compose-view").style.display = "block";
 
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  document.querySelector("#compose-recipients").value = "";
+  document.querySelector("#compose-subject").value = "";
+  document.querySelector("#compose-body").value = "";
 }
 
 /**
@@ -45,30 +64,31 @@ function loadMailbox(mailbox) {
   currentMailbox = mailbox;
 
   // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
-  document.querySelector('#display-email-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector("#emails-view").style.display = "block";
+  document.querySelector("#display-email-view").style.display = "none";
+  document.querySelector("#compose-view").style.display = "none";
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${
+  document.querySelector("#emails-view").innerHTML = `<h3>${
     mailbox.charAt(0).toUpperCase() + mailbox.slice(1)
   }</h3>`;
 
   // load mailbox
   fetch(`/emails/${mailbox}`)
-    .then((response) => response.json())
-    .then(emails => {
-      if (!emails.error) {
-        if (emails.length === 0) {
-          document.querySelector('#emails-view').innerHTML += 'No emails found.';
-        }
-        // Print emails
-        emails.forEach(displayEmails);
-      } else {
-        throw new Error(emails.error);
+  .then((response) => response.json())
+  .then((emails) => {
+    if (!emails.error) {
+      if (emails.length === 0) {
+        document.querySelector("#emails-view").innerHTML +=
+          "No emails found.";
       }
-    })
-    .catch(error => alert(error))
+      // Print emails
+      emails.forEach(displayEmails);
+    } else {
+      throw new Error(emails.error);
+    }
+  })
+  .catch((error) => alert(error));
 }
 
 /**
@@ -79,22 +99,22 @@ function loadMailbox(mailbox) {
  */
 function displayEmails(email) {
   // create a new div for displaying email
-  const row = document.createElement('div');
+  const row = document.createElement("div");
   // add css style
-  row.classList.add('email-entry');
+  row.classList.add("email-entry");
 
   if (email.read) {
-    row.classList.add('email-background');
+    row.classList.add("email-background");
   }
 
   row.innerHTML = `<strong>${email.sender}</strong> ${email.subject} <span class='email-time'>${email.timestamp}</span>`;
 
   // add event listener to view emails on click
-  row.addEventListener('click', function () {
+  row.addEventListener("click", function () {
     displayEmail(email.id);
   });
 
-  document.querySelector('#emails-view').append(row);
+  document.querySelector("#emails-view").append(row);
 }
 
 /**
@@ -103,64 +123,48 @@ function displayEmails(email) {
  */
 function displayEmail(emailId) {
   // Show the mailbox and hide other views
-  document.querySelector('#display-email-view').style.display = 'block';
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector("#display-email-view").style.display = "block";
+  document.querySelector("#emails-view").style.display = "none";
+  document.querySelector("#compose-view").style.display = "none";
+
+  currentEmailId = emailId;
 
   // GET the email
   fetch(`/emails/${emailId}`)
-    .then((response) => response.json())
-    .then(email => {
-      if (! email.error) {
-        // populate values to email view html section
-        document.querySelector('#from-user').innerHTML = email.sender;
-        document.querySelector('#to-user').innerHTML = email.recipients;
-        document.querySelector('#email-subject').innerHTML = email.subject;
-        document.querySelector('#email-time').innerHTML = email.timestamp;
-        document.querySelector('#email-body').innerHTML = email.body;
+  .then((response) => response.json())
+  .then((email) => {
+    if (!email.error) {
+      // populate values to email view html section
+      document.querySelector("#from-user").innerHTML = email.sender;
+      document.querySelector("#to-user").innerHTML = email.recipients;
+      document.querySelector("#email-subject").innerHTML = email.subject;
+      document.querySelector("#email-time").innerHTML = email.timestamp;
+      document.querySelector("#email-body").innerHTML = email.body;
 
-        // show/hide archive/unarchive button as per current mailbox
-        // and email archive status
-        if (currentMailbox !== 'sent') {
-          if (email.archived) {
-            document.querySelector('#archive-btn').style.display = 'none';
-            document.querySelector('#unarchive-btn').style.display =
-              'inline-block';
-          } else {
-            document.querySelector('#archive-btn').style.display = 'inline-block';
-            document.querySelector('#unarchive-btn').style.display = 'none';
-          }
+      // show/hide archive/unarchive button as per current mailbox
+      // and email archive status
+      if (currentMailbox !== "sent") {
+        if (email.archived) {
+          document.querySelector("#archive-btn").style.display = "none";
+          document.querySelector("#unarchive-btn").style.display =
+            "inline-block";
         } else {
-          document.querySelector('#unarchive-btn').style.display = 'none';
-          document.querySelector('#archive-btn').style.display = 'none';
+          document.querySelector("#archive-btn").style.display =
+            "inline-block";
+          document.querySelector("#unarchive-btn").style.display = "none";
         }
       } else {
-        throw new Error(email.error);
+        document.querySelector("#unarchive-btn").style.display = "none";
+        document.querySelector("#archive-btn").style.display = "none";
       }
-    })
-    .catch(error => alert(error))
+    } else {
+      throw new Error(email.error);
+    }
+  })
+  .catch((error) => alert(error));
 
   // mark email as read
-  fetch(`/emails/${emailId}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-      read: true,
-    }),
-  });
-
-  // attach event listeners to archive/unarchive buttons here
-  // since we have emailId for each email present here
-  document
-    .querySelector('#archive-btn')
-    .addEventListener('click', () => readOrArchiveEmail(emailId, "archived", true));
-  document
-    .querySelector('#unarchive-btn')
-    .addEventListener('click', () => readOrArchiveEmail(emailId, "archived", false));
-
-  // attach event listeners to reply button
-  document
-    .querySelector('#reply-btn')
-    .addEventListener('click', () => replyEmail(emailId));
+  readOrArchiveEmail(emailId, "read", true);
 }
 
 /**
@@ -169,24 +173,24 @@ function displayEmail(emailId) {
  */
 function sendEmail() {
   // Get form submitted values
-  const recipients = document.querySelector('#compose-recipients').value;
-  const subject = document.querySelector('#compose-subject').value;
-  const emailBody = document.querySelector('#compose-body').value;
+  const recipients = document.querySelector("#compose-recipients").value;
+  const subject = document.querySelector("#compose-subject").value;
+  const emailBody = document.querySelector("#compose-body").value;
 
   // send email
-  fetch('/emails', {
-    method: 'POST',
+  fetch("/emails", {
+    method: "POST",
     body: JSON.stringify({
       recipients: recipients,
       subject: subject,
       body: emailBody,
     }),
   })
-  .then(response => response.json())
-    // load sent mailbox when email sent successfully
+  .then((response) => response.json())
+  // load sent mailbox when email sent successfully
   .then((response) => {
-    if (response.ok) {
-      loadMailbox('sent');
+    if (!response.error) {
+      loadMailbox("sent");
     } else {
       throw new Error(response.error);
     }
@@ -197,29 +201,24 @@ function sendEmail() {
 }
 
 /**
- * Function to archive/unarchive
- * an email
- * @param emailId - Email Id that needs to be archived/unarchived
+ * Function to mark an email as archive/unarchive
+ * or read/unread
+ * @param emailId - Email Id that needs action
+ * @param action - Action be be performed (archived/read)
  * @param flag - true/false for the action that needs to be taken
  */
-function archiveEmail(emailId, flag) {
-  fetch(`/emails/${emailId}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-      archived: flag,
-    }),
-  }).then(() => loadMailbox('inbox'));
-}
-
 function readOrArchiveEmail(emailId, action, flag) {
-  console.log(`marking email as ${action}`);
+  console.log(`marking email as ${action} for email with Id: ${emailId}`);
   fetch(`/emails/${emailId}`, {
-    method: 'PUT',
+    method: "PUT",
     body: JSON.stringify({
       [action]: flag,
     }),
-  })
-  .then(() => loadMailbox('inbox'));
+  }).then(() => {
+    if (action === "archived") {
+      loadMailbox("inbox");
+    }
+  });
 }
 
 /**
@@ -229,39 +228,45 @@ function readOrArchiveEmail(emailId, action, flag) {
  */
 function replyEmail(emailId) {
   // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#display-email-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector("#emails-view").style.display = "none";
+  document.querySelector("#display-email-view").style.display = "none";
+  document.querySelector("#compose-view").style.display = "block";
 
+  console.log(`replying for email with Id: ${emailId}`);
   // GET the email
   fetch(`/emails/${emailId}`)
-  .then((response) => response.json())
-  .then(email => {
-    if (! email.error) {
-      // populate values to email view html section
-      document.querySelector('#compose-recipients').value = email.sender;
+    .then((response) => response.json())
+    .then((email) => {
+      if (!email.error) {
+        // populate values to email view html section
+        document.querySelector("#compose-recipients").value = email.sender;
 
-      // check if subject contains 'Re:' and form subject accordingly
-      if (!email.subject.toLowerCase().startsWith('re:')) {
-        email.subject = 'Re: ' + email.subject;
+        // check if subject contains 'Re:' and form subject accordingly
+        if (!email.subject.toLowerCase().startsWith("re:")) {
+          email.subject = "Re: " + email.subject;
+        }
+
+        document.querySelector("#compose-subject").value = email.subject;
+
+        // create body text
+        const replyEmailBody =
+          "\n\n\n\n---------------------------------------------\n\n" +
+          "on " +
+          email.timestamp +
+          "  " +
+          email.sender +
+          "  wrote: \n\n" +
+          email.body;
+        console.log(`email body is: ${replyEmailBody}`)
+        document.querySelector("#compose-body").value = replyEmailBody;
+        console.log(`filled reply email message... ${replyEmailBody}`);
+      } else {
+        console.log("reached else");
+        throw new Error(email.error);
       }
-
-      document.querySelector('#compose-subject').value = email.subject;
-
-      // create body text
-      const emailBody =
-        '\n\n\n\n---------------------------------------------\n\n' +
-        'on ' +
-        email.timestamp +
-        '  ' +
-        email.sender +
-        '  wrote: \n\n' +
-        email.body;
-      document.querySelector('#compose-body').innerHTML = emailBody;
-    } else {
-      console.log("reached else");
-      throw new Error(email.error);
-    }
-  })
-  .catch((error) => alert(error));
+    })
+    .catch((error) => {
+      alert(error);
+      console.log("caught an error on replying email...");
+    });
 }
