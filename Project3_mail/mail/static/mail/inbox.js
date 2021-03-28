@@ -16,13 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("click", () => loadMailbox("archive"));
   document.querySelector("#compose").addEventListener("click", composeEmail);
 
-
   // By default, load the inbox
   loadMailbox("inbox");
 
   // Send email when user clicks submit on compose form
-  document.querySelector("#compose-form")
-  .addEventListener("submit", () => sendEmail());
+  document
+    .querySelector("#compose-form")
+    .addEventListener("submit", () => sendEmail());
 
   // Add event listeners to archive/unarchive and reply buttons
   document
@@ -77,21 +77,21 @@ function loadMailbox(mailbox) {
 
   // load mailbox
   fetch(`/emails/${mailbox}`)
-  .then(response => response.json())
-  .then(emails => {
-    if (!emails.error) {
-      if (emails.length === 0) {
-        document.querySelector("#emails-view").innerHTML +=
-          "No emails found.";
+    .then((response) => response.json())
+    .then((emails) => {
+      if (!emails.error) {
+        if (emails.length === 0) {
+          document.querySelector("#emails-view").innerHTML +=
+            "No emails found.";
+        }
+        // Print emails
+        emails.forEach(displayEmails);
+      } else {
+        // throw error returned by backend
+        throw new Error(emails.error);
       }
-      // Print emails
-      emails.forEach(displayEmails);
-    } else {
-      // throw error returned by backend
-      throw new Error(emails.error);
-    }
-  })
-  .catch((error) => alert(error));
+    })
+    .catch((error) => alert(error));
 }
 
 /**
@@ -110,7 +110,7 @@ function displayEmails(email) {
     row.classList.add("email-background");
   }
 
-  row.innerHTML = `<strong>${email.sender}</strong>${email.subject}<span class='email-time'>${email.timestamp}</span>`;
+  row.innerHTML = `<strong> ${email.sender} </strong>${email.subject}<span class='email-time'>${email.timestamp}</span>`;
 
   // add event listener to view emails on click
   row.addEventListener("click", function () {
@@ -134,38 +134,38 @@ function displayEmail(emailId) {
 
   // GET the email
   fetch(`/emails/${emailId}`)
-  .then(response => response.json())
-  .then(email => {
-    if (!email.error) {
-      // populate values to email view html section
-      document.querySelector("#from-user").innerHTML = email.sender;
-      document.querySelector("#to-user").innerHTML = email.recipients;
-      document.querySelector("#email-subject").innerHTML = email.subject;
-      document.querySelector("#email-time").innerHTML = email.timestamp;
-      document.querySelector("#email-body").innerHTML = email.body;
+    .then((response) => response.json())
+    .then((email) => {
+      if (!email.error) {
+        // populate values to email view html section
+        document.querySelector("#from-user").innerHTML = email.sender;
+        document.querySelector("#to-user").innerHTML = email.recipients;
+        document.querySelector("#email-subject").innerHTML = email.subject;
+        document.querySelector("#email-time").innerHTML = email.timestamp;
+        document.querySelector("#email-body").innerHTML = email.body;
 
-      // show/hide archive/unarchive button as per current mailbox
-      // and email archive status
-      if (currentMailbox !== "sent") {
-        if (email.archived) {
-          document.querySelector("#archive-btn").style.display = "none";
-          document.querySelector("#unarchive-btn").style.display =
-            "inline-block";
+        // show/hide archive/unarchive button as per current mailbox
+        // and email archive status
+        if (currentMailbox !== "sent") {
+          if (email.archived) {
+            document.querySelector("#archive-btn").style.display = "none";
+            document.querySelector("#unarchive-btn").style.display =
+              "inline-block";
+          } else {
+            document.querySelector("#archive-btn").style.display =
+              "inline-block";
+            document.querySelector("#unarchive-btn").style.display = "none";
+          }
         } else {
-          document.querySelector("#archive-btn").style.display =
-            "inline-block";
           document.querySelector("#unarchive-btn").style.display = "none";
+          document.querySelector("#archive-btn").style.display = "none";
         }
       } else {
-        document.querySelector("#unarchive-btn").style.display = "none";
-        document.querySelector("#archive-btn").style.display = "none";
+        // throw error returned by backend
+        throw new Error(email.error);
       }
-    } else {
-      // throw error returned by backend
-      throw new Error(email.error);
-    }
-  })
-  .catch((error) => alert(error));
+    })
+    .catch((error) => alert(error));
 
   // mark email as read
   readOrArchiveEmail(emailId, "read", true);
@@ -190,17 +190,17 @@ function sendEmail() {
       body: emailBody,
     }),
   })
-  .then(response => response.json())
-  // load sent mailbox when email sent successfully
-  .then(response => {
-    if (!response.error) {
-      loadMailbox("sent");
-    } else {
-      // throw error returned by backend
-      throw new Error(response.error);
-    }
-  })
-  .catch((error) => alert(error));
+    .then((response) => response.json())
+    // load sent mailbox when email sent successfully
+    .then((response) => {
+      if (!response.error) {
+        loadMailbox("sent");
+      } else {
+        // throw error returned by backend
+        throw new Error(response.error);
+      }
+    })
+    .catch((error) => alert(error));
 
   event.preventDefault();
 }
@@ -218,9 +218,8 @@ function readOrArchiveEmail(emailId, action, flag) {
     body: JSON.stringify({
       [action]: flag,
     }),
-  })
-  .then(() => {
-    // if email was marked archived/unarchived 
+  }).then(() => {
+    // if email was marked archived/unarchived
     // then load inbox on success
     if (action === "archived") {
       loadMailbox("inbox");
@@ -241,36 +240,31 @@ function replyEmail(emailId) {
 
   // GET the email
   fetch(`/emails/${emailId}`)
-  .then((response) => response.json())
-  .then((email) => {
-    if (!email.error) {
-      // populate values to email view html section
-      document.querySelector("#compose-recipients").value = email.sender;
+    .then((response) => response.json())
+    .then((email) => {
+      if (!email.error) {
+        // populate values to email view html section
+        document.querySelector("#compose-recipients").value = email.sender;
 
-      // check if subject contains 'Re:' and form subject accordingly
-      if (!email.subject.toLowerCase().startsWith("re:")) {
-        email.subject = "Re: " + email.subject;
+        // check if subject contains 'Re:' and form subject accordingly
+        if (!email.subject.toLowerCase().startsWith("re:")) {
+          email.subject = "Re: " + email.subject;
+        }
+
+        document.querySelector("#compose-subject").value = email.subject;
+
+        // create body text
+        const replyEmailBody =
+          `\n\n\n---------------------------------------------\n` +
+          `"on ${email.timestamp} ${email.sender} wrote:" \n ${email.body}`;
+
+        document.querySelector("#compose-body").value = replyEmailBody;
+      } else {
+        // throw error returned by backend
+        throw new Error(email.error);
       }
-
-      document.querySelector("#compose-subject").value = email.subject;
-
-      // create body text
-      const replyEmailBody =
-        "\n\n\n\n---------------------------------------------\n\n" +
-        '"on ' +
-        email.timestamp +
-        "  " +
-        email.sender +
-        '  wrote:" \n\n' +
-        email.body;
-
-      document.querySelector("#compose-body").value = replyEmailBody;
-    } else {
-      // throw error returned by backend
-      throw new Error(email.error);
-    }
-  })
-  .catch((error) => {
-    alert(error);
-  });
+    })
+    .catch((error) => {
+      alert(error);
+    });
 }
