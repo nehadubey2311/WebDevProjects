@@ -1,0 +1,13 @@
+.hide {
+    display: none;
+}
+
+.liked {
+    font-size: 100%;
+    color: red;
+}
+
+.unliked {
+    font-size: 100%;
+    color: grey;
+}

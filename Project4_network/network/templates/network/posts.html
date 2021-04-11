@@ -1,0 +1,62 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <h2>All Posts</h2>
+
+    <!-- Form to add new post -->
+    {% if display_new_post_form %}
+        <div class="card flex-row flex-wrap">
+            <div class="card-footer w-100 text-muted"></div>
+            <div class="card-block px-2">
+                <div class="form-group">
+                    <label for="postContent">New Post</label>
+                    <textarea class="form-control" id="postContent" rows="3"></textarea>
+                    <button type="button" class="btn-primary" id="newPost">Post</button>
+                </div>
+            </div>  
+        </div>
+    {% endif %}
+
+    <!-- Display all posts -->
+    {% for post in page_obj %}        
+        <div class="card flex-row flex-wrap">
+            <div class="card-footer w-100 text-muted"></div>
+            <div class="card-block px-2">
+                <a class="card-text" href="{% url 'profile' post.user_id %}">{{ post.user }}</a>
+                <br>
+                <!-- display post edit button for user's own post only -->
+                {% if user.id == post.user_id %}
+                    <a class="edit" data-post-id="{{ post.id }}"><small>Edit</small></a>
+                {% endif %}
+                <p class="card-text content" data-post-id="{{ post.id }}">{{ post.content }}</p>
+                <!-- Add hidden textarea and save button to be dispalyed while editing post -->
+                <textarea class="form-control hide" id="editPost-{{ post.id }}" rows="3"></textarea>
+                <button type="button" class="btn-primary hide" id="editBtn-{{ post.id }}"><small>Save</small></button>
+                <p class="card-text">{{ post.created }}</p>
+                <p class="like-btn unliked" id="{{post.id}}" data-like="{{ post.id }}">&hearts; {{ post.likes.count }}</p>
+            </div>
+        </div>
+        <br>
+    {% empty %}
+        <div>Sorry no posts found</div>
+    {% endfor %}
+
+    <div class="pagination justify-content-end">
+        <span class="step-links">
+            {% if page_obj.has_previous %}          
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+        </span>
+    </div>
+    
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/posts.js' %}"></script>
+{% endblock %}

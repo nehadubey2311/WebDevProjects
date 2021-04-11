@@ -3,4 +3,12 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    follows = models.ManyToManyField("self", related_name="followers")
+
+
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                            related_name="user_listings")
+    content = models.CharField(max_length=500)
+    created = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, blank=True, related_name="liked_by")

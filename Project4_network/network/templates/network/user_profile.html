@@ -1,0 +1,23 @@
+{% extends "network/posts.html" %}
+{% load static %}
+
+{% block user_profile %}
+    <h3>User: {{ username }}</h3>
+    {% if user.id != user_id %}
+        <!-- if logged in user not already follows this user then display
+        'follow' button and hide 'unfollow' button and vice versa in else condition -->
+        {% if not follows %}
+            <button type="button" class="btn-primary" data-user="{{ user_id }}" id="follow">Follow</button>
+            <button type="button" class="btn-primary hide" data-user="{{ user_id }}" id="unfollow">Un-Follow</button>
+        {% else %}
+            <button type="button" class="btn-primary hide" data-user="{{ user_id }}" id="follow">Follow</button>
+            <button type="button" class="btn-primary" data-user="{{ user_id }}" id="unfollow">Un-Follow</button>
+        {% endif %}
+        <br>
+    {% endif %}
+    <br>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/users.js' %}"></script>
+{% endblock %}
