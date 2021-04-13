@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const followButton = document.querySelector("#follow");
     const unfollowButton = document.querySelector("#unfollow");
-    // attach event listener only when 'follow' button exists
+    // attach event listener only when 'follow'/'unfollow' buttons exist
     if (followButton) {
         document.querySelector("#follow").addEventListener("click", follow);
     }
@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /**
- * Follow users
+ * Follow a user when 'follow' button is clicked
  */
 function follow() {
     const user_id = this.dataset.user;
-    console.log(`adding follower...${user_id}`);
+
     fetch(`/profile/${user_id}/follow`)
     .then(
         // highlight bottons to reflect if user is already being followed or not
@@ -28,14 +28,14 @@ function follow() {
 }
 
 /**
- * Unfollow a user
+ * Unfollow a user when 'unfollow' button is clicked
  */
 function unfollow() {
     const user_id = this.dataset.user;
-    console.log(`removing followed user...${user_id}`);
+
     fetch(`/profile/${user_id}/unfollow`)
     .then(
-        // highlight bottons to reflect if user is already being followed or not
+        // display/hide bottons to reflect if user is being followed or not
         document.querySelector("#follow").style.display= "block",
         document.querySelector("#unfollow").style.display="none",
     )

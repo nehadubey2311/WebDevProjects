@@ -11,3 +11,12 @@
     font-size: 100%;
     color: grey;
 }
+
+#user {
+    /* width: 25rem; */
+    background-color:lightskyblue;
+}
+
+.card-footer {
+    background-color: lightcoral;
+}

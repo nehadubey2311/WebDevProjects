@@ -1,7 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelector("#newPost").addEventListener("click", () => {
-        addNewPost();
-    });
+    const newPostDom =  document.querySelector("#newPost");
+    // attach event listener only when element is present on DOM since
+    // this won't be available on 'following' and 'user profile' page
+    if (newPostDom) {
+        newPostDom.addEventListener("click", () => {
+            addNewPost();
+        });
+    }
 
     // Attach event listener for all post edit buttons
     document.querySelectorAll(".edit").forEach(element => {
@@ -10,30 +15,46 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Update all liked/unliked heart button color as per 
     // liked/unliked by current logged in user
+    // red button: liked by logged-in user
+    // grey button: not liked by logged-in user
     document.querySelectorAll(".like-btn").forEach(element => {
-        updateLikeButton(element);
+        const postId = element.attributes['data-like'].nodeValue;
+        updateLikeButton(postId);
     });
 
-    // Attach event listener for all like button
+    // Attach event listener for all like/unlike heart buttons
     document.querySelectorAll(".like-btn").forEach(element => {
         element.addEventListener("click", likeUnlikePost);
     });
 });
 
+/**
+ * Adds new post as submitted by a user
+ */
 function addNewPost() {
-    console.log("adding...");
     const postContent = document.querySelector("#postContent").value;
-    console.log(`post content is: ${postContent}`);
 
-    fetch("/addPost", {
+    fetch("/post/add", {
         method: "POST",
         body: JSON.stringify({
             content: postContent,
         }),
+    }).then((response) => response.json())
+    .then((response) => {
+        if (!response.error) {
+            window.location.reload();
+        } else {
+          // throw error returned by backend
+          throw new Error(response.error);
+        }
     })
-    .then(() => window.location.reload());
+    .catch((error) => alert(error));
 }
 
+/**
+ * Provides the ability for logged-in user to edit their own posts
+ * by pre-filling the textarea with current post content
+ */
 function editPost() {
     // get existing content of post
     const postId = this.dataset.postId;
@@ -49,6 +70,12 @@ function editPost() {
     document.querySelector(`#editBtn-${postId}`).addEventListener("click", () => savePost(postId));
 }
 
+/**
+ * Saves the edited post by it's author by calling backend
+ * and without reloading the page
+ * 
+ * @param postId: id of the post being edited and saved
+ */
 function savePost(postId) {
     // Get edited post content
     const updatedContent = document.querySelector(`#editPost-${postId}`).value;
@@ -71,17 +98,18 @@ function savePost(postId) {
           // throw error returned by backend
           throw new Error(response.error);
         }
-    });
+    })
+    .catch((error) => alert(error));
 }
 
-function updateLikeButton(element) {
-    /**
-     * get logged in user
-     * check if user exists in post.likes via fetch call
-     * accordingly update like button color
-     * update likes count
-     */
-    const postId = element.attributes['id'].nodeValue;
+/**
+ * This updates like button for all posts. Updates the like button
+ * color if liked by logged-in user and update likes count
+ * 
+ * @param postId: id of posts being updated
+ */
+function updateLikeButton(postId) {
+    const element = document.querySelector(`#like-${postId}`);
     fetch(`/post/${postId}/liked`, {
         method: "GET"
     }).then((response) => response.json())
@@ -92,6 +120,25 @@ function updateLikeButton(element) {
     });
 }
 
+/**
+ * Enables a user to like/unlike a post depending on current state.
+ * when promise received call updateLikeButton to reflect like/unlike status and count
+ */
 function likeUnlikePost() {
-    console.log('like post here...');
+    const post_id = this.dataset.like;
+    fetch(`/post/${post_id}/like_unlike_post`, {
+        method: "POST",
+        body: JSON.stringify({
+            post_id: post_id
+        })
+    }).then((response) => response.json())
+    .then((response) => {
+        if (!response.error) {
+            const post_id = this.dataset.like;
+            updateLikeButton(post_id);
+        } else {
+            throw new Error("Operation can't be executed, please try again !!");
+        } 
+    })
+    .catch((error) => alert(error));
 }
