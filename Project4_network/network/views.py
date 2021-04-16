@@ -1,4 +1,5 @@
 import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -14,9 +15,10 @@ from .models import User, Post
 
 def index(request):
     """
-    returns all posts page for app default route
+    Renders all post to users
     """
-    return render(request, "network/posts.html")
+    all_posts = Post.objects.all().order_by("-created")
+    return render_with_paginator(request, all_posts, True)
 
 
 def login_view(request):
@@ -96,23 +98,14 @@ def render_with_paginator(request, all_posts, display_new_post_form=False):
     """
     # configure pagination behavior
     paginator = Paginator(all_posts, 10)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "network/posts.html", {
+    return render(request, "network/index.html", {
         "display_new_post_form": display_new_post_form,
         "posts": all_posts,
         "page_obj": page_obj
     })
-
-
-@csrf_exempt
-def posts(request):
-    """
-    Renders all post to users
-    """
-    all_posts = Post.objects.all().order_by("-created")
-    return render_with_paginator(request, all_posts, True)
 
 
 @csrf_exempt
@@ -141,6 +134,8 @@ def user_profile(request, user_id):
     """
     user = get_object_or_404(User, pk=user_id)
     user_posts = get_list_or_404(Post, user=user_id)
+    # sorting posts reverse chronological order
+    user_posts.reverse()
 
     # Get all users current user follows
     follow_users = User.objects.values_list(
@@ -152,7 +147,7 @@ def user_profile(request, user_id):
 
     # configure pagination behavior
     paginator = Paginator(user_posts, 10)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
     # get 'followers' for a user and whom the user 'follows'
@@ -201,7 +196,7 @@ def following(request):
     follows = User.objects.values("follows").filter(pk=request.user.id)
 
     # Filter all posts written by followed users
-    user_posts = Post.objects.filter(user_id__in=follows)
+    user_posts = Post.objects.filter(user_id__in=follows).order_by("-created")
     return render_with_paginator(request, user_posts)
 
 

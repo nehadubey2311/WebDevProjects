@@ -1,21 +1,23 @@
-{% extends "network/posts.html" %}
+{% extends "network/index.html" %}
 {% load static %}
 
 {% block user_profile %}
     <div class="card" id="user">
         <div class="card-body">
             <h1 class="card-title">{{ username }}</h1>
-            {% if user.id != user_id %}
-                <!-- if logged in user not already follows this user then display
-                'follow' button and hide 'unfollow' button and vice versa in else condition -->
-                {% if not is_user_followed %}
-                    <button type="button" class="btn-primary" data-user="{{ user_id }}" id="follow">Follow</button>
-                    <button type="button" class="btn-primary hide" data-user="{{ user_id }}" id="unfollow">Un-Follow</button>
-                {% else %}
-                    <button type="button" class="btn-primary hide" data-user="{{ user_id }}" id="follow">Follow</button>
-                    <button type="button" class="btn-primary" data-user="{{ user_id }}" id="unfollow">Un-Follow</button>
+            {% if user.is_authenticated %}
+                {% if user.id != user_id %}
+                    <!-- if logged in user not already follows this user then display
+                    'follow' button and hide 'unfollow' button and vice versa in else condition -->
+                    {% if not is_user_followed %}
+                        <button type="button" class="btn-primary show" data-user="{{ user_id }}" id="follow">Follow</button>
+                        <button type="button" class="btn-primary hide" data-user="{{ user_id }}" id="unfollow">Un-Follow</button>
+                    {% else %}
+                        <button type="button" class="btn-primary hide" data-user="{{ user_id }}" id="follow">Follow</button>
+                        <button type="button" class="btn-primary show" data-user="{{ user_id }}" id="unfollow">Un-Follow</button>
+                    {% endif %}
+                    <br>
                 {% endif %}
-                <br>
             {% endif %}
         <br>
         </div>
@@ -23,7 +25,7 @@
         <div class="card-body">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">Follows: {{ follows }}</li>
-                <li class="list-group-item">Followers: {{ followers }}</li>
+                <li class="list-group-item">Followers: <span id="followers-count">{{ followers }}</span></li>
             </ul>
         </div>
     </div>

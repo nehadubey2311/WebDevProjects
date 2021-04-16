@@ -4,7 +4,7 @@
 
 .liked {
     font-size: 100%;
-    color: red;
+    color: #E74C3C;
 }
 
 .unliked {
@@ -13,10 +13,13 @@
 }
 
 #user {
-    /* width: 25rem; */
-    background-color:lightskyblue;
+    background-color:#AED6F1;
 }
 
 .card-footer {
-    background-color: lightcoral;
+    background-color: #F5B7B1;
+}
+
+.show {
+    display: block;
 }
