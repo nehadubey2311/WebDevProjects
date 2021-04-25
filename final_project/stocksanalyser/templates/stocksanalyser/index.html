@@ -1,0 +1,20 @@
+{% extends "stocksanalyser/layout.html" %}
+{% load static %}
+
+{% block body %}
+<br>
+<div class="row">
+    <div class="col-8">
+        {% for article in articles %}
+            <article class="articles-section">
+                <h2><a href="{% url 'stocksanalyser:article' article.id %}">{{ article.title }}</a></h2>
+                <p>{{ article.content | slice:":400" }}...</p>
+            </article>
+        {% endfor %}
+    </div>
+    <div class="col-4">
+        
+    </div>
+</div>
+    
+{% endblock %}

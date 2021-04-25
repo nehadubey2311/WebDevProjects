@@ -1,0 +1,50 @@
+{% extends "stocksanalyser/layout.html" %}
+{% load static %}
+
+{% block body %}
+<br>
+<div class="row">
+    <div class="col-8">
+        <article class="articles-section">
+            <h2>{{ article.title }}</h2>
+            <p class="like-btn unliked" id="like-{{ article.id }}" data-like="{{ article.id }}">&hearts; {{ article.likes.count }}</p>
+            <p>{{ article.content }}</p>
+        </article>
+
+        <!-- Form to add comments when user is logged in -->
+        {% if user.is_authenticated %}
+        <form action="{% url 'stocksanalyser:comments' article.id %}" method="post">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input class="my-3 btn-primary" type="submit">
+        </form>
+        {% endif %}
+
+        <!-- List all comments on listing -->
+        <div class="card">
+            <div class="card-body">
+                <h2>{{ comments.count }} comments</h2>
+                {% for item in comments %}
+                    <div class="comments" style="padding: 10px;">
+                        <p class="font-weight-bold">
+                            {{ item.user }}
+                            <span class=" text-muted font-weight-normal">
+                                {{ item.time }}
+                            </span>
+                        </p>
+                        {{ item.comment | linebreaks }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        
+    </div>
+</div>
+    
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'stocksanalyser/stocksanalyser.js' %}"></script>
+{% endblock %}

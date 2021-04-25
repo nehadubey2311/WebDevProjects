@@ -1,0 +1,22 @@
+#background-img {
+    background-image: url("stocks_analyser_copy.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: auto;
+    height: 250px;
+}
+
+.articles-section {
+    border-top: 1px solid grey;
+    padding: 10px;
+}
+
+.liked {
+    font-size: 100%;
+    color: #E74C3C;
+}
+
+.unliked {
+    font-size: 100%;
+    color: grey;
+}

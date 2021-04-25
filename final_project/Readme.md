@@ -1,4 +1,4 @@
-## Notes
+# Notes
 1. Acknowledge storing DB password for the purpose of this project in settings.py. WOuld be storing as `secret.json` file as per: https://stackoverflow.com/a/42077576
 
 # Using MySql as db
@@ -10,12 +10,12 @@ For using MySql followed below steps:
 
 ## Timeline:
 **4/23:** 
-- [ ] html basic layout
+- [x] html basic layout
 
 **4/24:** 
-- [ ] admin can add articles
-- [ ] comments by logged-in users
-- [ ] like/unlike by logged-in users
+- [x] admin can add articles
+- [x] comments by logged-in users
+- [x] like/unlike by logged-in users
 
 **4/25:** 
 - [ ] categories for articles
