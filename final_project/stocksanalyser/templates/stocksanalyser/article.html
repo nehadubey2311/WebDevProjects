@@ -7,7 +7,20 @@
     <div class="col-8">
         <article class="articles-section">
             <h2>{{ article.title }}</h2>
+            <div><small>Posted by: {{ article.author }} | {{ article.created }}</small></div>
+            <br>
+            <!-- like/unlike button -->
             <p class="like-btn unliked" id="like-{{ article.id }}" data-like="{{ article.id }}">&hearts; {{ article.likes.count }}</p>
+            <!-- Button to add/remove article to/fromz 'My Articles' -->
+            {% if not watcher %}
+                <a class="btn btn-primary" href="{% url 'stocksanalyser:add_article' article.id %}" 
+                role="button">Add to My Article</a>
+            {% else %}
+                <a class="btn btn-primary" href="{% url 'stocksanalyser:remove_article' article.id %}" 
+                role="button">Remove From My Article</a>
+            {% endif %}
+            <br><br>
+            
             <p>{{ article.content }}</p>
         </article>
 
@@ -20,7 +33,7 @@
         </form>
         {% endif %}
 
-        <!-- List all comments on listing -->
+        <!-- List all comments on articles -->
         <div class="card">
             <div class="card-body">
                 <h2>{{ comments.count }} comments</h2>

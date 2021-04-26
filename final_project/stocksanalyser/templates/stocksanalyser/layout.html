@@ -14,40 +14,49 @@
     
         <div id="background-img"></div>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">StocksAnalyser</a>
 
-            <div>
-              <ul class="navbar-nav mr-auto">
+            <div class="container">
+                <a class="navbar-brand" href="#"> StocksAnalyser </a>
+                <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'stocksanalyser:index' %}">Most Recent</a>
+                  <a class="nav-link" href="{% url 'stocksanalyser:index' %}"> Most Recent </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'stocksanalyser:category' 'investing' %}">Investing</a>
+                    <a class="nav-link" href="{% url 'stocksanalyser:category' 'investing' %}"> Investing </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'stocksanalyser:category' 'tech_analysis' %}">Learn Technical Analysis</a>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link  dropdown-toggle" href="#" data-bs-toggle="dropdown"> Learn Analysis </a>
+                     <ul class="dropdown-menu">
+                       <li><a class="dropdown-item" href="{% url 'stocksanalyser:category' 'tech_analysis' %}"> Learn Technical Analysis</a></li>
+                       <li><a class="dropdown-item" href="{% url 'stocksanalyser:category' 'fund_analysis' %}"> Learn Fundamental Analysis </a></li>
+                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'stocksanalyser:category' 'fund_analysis' %}">Learn Fundamental Analysis</a>
-                </li>
+                
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="">My Articles</a>
+                        <a class="nav-link" href="{% url 'stocksanalyser:my_articles' %}"> My Articles </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stocksanalyser:logout' %}">Log Out</a>
+                        <a class="nav-link" href="{% url 'stocksanalyser:guest_article' %}"> Submit Articles </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stocksanalyser:user_questions' %}"> Q&A </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stocksanalyser:logout' %}"> Log Out </a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stocksanalyser:login' %}">Log In</a>
+                        <a class="nav-link" href="{% url 'stocksanalyser:login' %}"> Log In </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stocksanalyser:register' %}">Register</a>
+                        <a class="nav-link" href="{% url 'stocksanalyser:register' %}"> Register </a>
                     </li>
                 {% endif %}
               </ul>

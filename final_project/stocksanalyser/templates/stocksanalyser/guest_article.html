@@ -1,0 +1,15 @@
+{% extends "stocksanalyser/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="container">
+        <p class="message">You can now be an author too. Feel free to submit your article here with a 
+            valid title and content. We will be delighted to approve and add your article 
+            to our blog. Good luck !!</p>
+        <form action="{% url 'stocksanalyser:guest_article' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input class="my-3 btn-primary" type="submit">
+        </form>
+    </div>
+{% endblock %}

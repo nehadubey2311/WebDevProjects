@@ -8,6 +8,9 @@ For using MySql followed below steps:
 3. Installed PyMySql
 4. export DYLD_LIBRARY_PATH="/usr/local/mysql/lib:$PATH"
 
+# For guest articles
+When guest articles are submitted admin needs to approve and assign category to them
+
 ## Timeline:
 **4/23:** 
 - [x] html basic layout
@@ -19,19 +22,22 @@ For using MySql followed below steps:
 
 **4/25:** 
 - [ ] categories for articles
-- [ ] sub-menu as per categories
-- [ ] pagination
+- [x] sub-menu as per categories
+- [x] pagination
+- [x] adding to 'My Articles'
 
 **4/29:** 
-- [ ] guest author article submission
+- [x] guest author article submission
+- [x] display approved articles only
 - [ ] ask questions Q&A
+- [x] display date posted/author for articles
 
 **5/1:**  
-- [ ] social media links
-- [ ] suggesting articles, most liked ones
+- [x] social media links
+- [x] suggesting articles, most liked ones
 
 **5/2:**  
-- [ ] connect us right pane
+- [x] connect us right pane
 - [ ] Newsletter
 
 **5/6:**  
@@ -43,6 +49,10 @@ For using MySql followed below steps:
 
 **5/8:**  
 - [ ] Improve UI
+- [ ] Detailed readme
 
 **5/9:** 
 - [ ] Submit
+
+## from css:
+/* .navbar .nav-item:hover .nav-link{   } */

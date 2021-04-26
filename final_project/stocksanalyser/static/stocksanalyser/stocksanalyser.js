@@ -1,11 +1,11 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const likeButton = document.querySelector(".like-btn");
-    let articleId = likeButton.dataset.like;
-    // update like button count and like/unlike status
-    updateLikeButton(articleId);
+document.addEventListener("DOMContentLoaded", function () {
+  const likeButton = document.querySelector(".like-btn");
+  let articleId = likeButton.dataset.like;
+  // update like button count and like/unlike status
+  updateLikeButton(articleId);
 
-    // attach event listener to like/unlike button
-    likeButton.addEventListener("click", likeUnlikeArticle);
+  // attach event listener to like/unlike button
+  likeButton.addEventListener("click", likeUnlikeArticle);
 });
 
 /**
@@ -13,23 +13,23 @@ document.addEventListener("DOMContentLoaded", function() {
  * when promise received call updateLikeButton to reflect like/unlike status and count
  */
 function likeUnlikeArticle() {
-    let articleId = this.dataset.like;
-    fetch(`/article/${articleId}/like_unlike_article`, {
-        method: "POST",
-        body: JSON.stringify({
-            articleId: articleId,
-        }),
+  let articleId = this.dataset.like;
+  fetch(`/article/${articleId}/like_unlike_article`, {
+    method: "POST",
+    body: JSON.stringify({
+      articleId: articleId,
+    }),
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      if (!response.error) {
+        postId = this.dataset.like;
+        updateLikeButton(articleId);
+      } else {
+        throw new Error(response.error);
+      }
     })
-        .then((response) => response.json())
-        .then((response) => {
-        if (!response.error) {
-            postId = this.dataset.like;
-            updateLikeButton(articleId);
-        } else {
-            throw new Error("Operation can't be executed, please try again !!");
-        }
-        })
-        .catch((error) => alert(error));
+    .catch((error) => alert(error));
 }
 
 /**
@@ -39,14 +39,14 @@ function likeUnlikeArticle() {
  * @param articleId: id of article being updated
  */
 function updateLikeButton(articleId) {
-const element = document.querySelector(`#like-${articleId}`);
-fetch(`/article/${articleId}/liked`, {
+  const element = document.querySelector(`#like-${articleId}`);
+  fetch(`/article/${articleId}/liked`, {
     method: "GET",
-})
+  })
     .then((response) => response.json())
     .then((response) => {
-    const status = response.message;
-    element.setAttribute("class", status);
-    element.innerHTML = `&hearts; ${response.likes}`;
+      const status = response.message;
+      element.setAttribute("class", status);
+      element.innerHTML = `&hearts; ${response.likes}`;
     });
 }

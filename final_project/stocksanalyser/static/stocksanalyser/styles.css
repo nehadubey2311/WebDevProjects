@@ -20,3 +20,20 @@
     font-size: 100%;
     color: grey;
 }
+
+@media all and (min-width: 992px) {
+	.navbar .nav-item .dropdown-menu{ display: none; }
+	.navbar .nav-item:hover .dropdown-menu{ display: block; }
+	.navbar .nav-item .dropdown-menu{ margin-top:0; }
+}
+
+.message {
+    margin: 50px;
+    font-weight: bold;
+    text-shadow: 4px 2px 2px #cccc00;
+}
+
+.card {
+    width: 18rem;
+    margin-bottom: 70px;
+}

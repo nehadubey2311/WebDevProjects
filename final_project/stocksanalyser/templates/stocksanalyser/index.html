@@ -5,15 +5,44 @@
 <br>
 <div class="row">
     <div class="col-8">
-        {% for article in articles %}
+        {% for article in page_obj %}
             <article class="articles-section">
                 <h2><a href="{% url 'stocksanalyser:article' article.id %}">{{ article.title }}</a></h2>
                 <p>{{ article.content | slice:":400" }}...</p>
             </article>
         {% endfor %}
+
+        <div class="pagination justify-content-end">
+            <span class="step-links">
+                {% if page_obj.has_previous %}          
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+        
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                {% endif %}
+            </span>
+        </div>
     </div>
     <div class="col-4">
-        
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Connect with us:</h5>
+              <a href="https://www.facebook.com/stocksanalyser" class="card-link"><img src="/static/stocksanalyser/fb_logo.png"></a>
+              <a href="https://twitter.com/stocksanalyser" class="card-link"><img src="/static/stocksanalyser/twitter_logo.png"></a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+              Recommended Reading:
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for item in rec_readings %}
+                    <li class="list-group-item"><a href="{% url 'stocksanalyser:article' item.id %}">{{ item.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 </div>
     
