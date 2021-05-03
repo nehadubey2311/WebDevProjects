@@ -1,11 +1,22 @@
 document.addEventListener("DOMContentLoaded", function () {
   const likeButton = document.querySelector(".like-btn");
-  let articleId = likeButton.dataset.like;
-  // update like button count and like/unlike status
-  updateLikeButton(articleId);
+  const userQuestionPage = document.querySelector("#submit-ques-btn");
 
-  // attach event listener to like/unlike button
-  likeButton.addEventListener("click", likeUnlikeArticle);
+  // Do below section when page loaded is articles view
+  if (likeButton) {
+    let articleId = likeButton.dataset.like;
+    // update like button count and like/unlike status
+    updateLikeButton(articleId);
+  
+    // attach event listener to like/unlike button
+    likeButton.addEventListener("click", likeUnlikeArticle);
+  }
+
+  // attach event listener when element (Q&A page) exists on DOM
+  if (userQuestionPage) {
+    userQuestionPage.addEventListener("click", () => submitUserQuestion());
+  }
+
 });
 
 /**
@@ -49,4 +60,32 @@ function updateLikeButton(articleId) {
       element.setAttribute("class", status);
       element.innerHTML = `&hearts; ${response.likes}`;
     });
+}
+
+/**
+ * This allows user to submit questions to be answered by admin user.
+ * After submitting the question this would refresh the page to
+ * display all questions by all users including the latest
+ * submitted question
+ */
+function submitUserQuestion() {
+  const quesContent = document.querySelector("#user-ques-content").value;
+
+  fetch("/user_questions/submit_question", {
+    method: "POST",
+    body: JSON.stringify({
+      content: quesContent,
+    }),
+  })
+  .then((response) => response.json())
+  .then((response) => {
+    // Note: I had to use below if to throw error
+    // to be able to catch later, without doing this
+    // I was not able to cath error as thrown by backend
+    if (response.error) {
+      // throw error returned by backend
+      throw new Error(response.error);
+    }
+  })
+  .catch((error) => alert(error));
 }

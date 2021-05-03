@@ -17,4 +17,5 @@ urlpatterns = [
     path("articles/my_articles", views.my_articles, name="my_articles"),
     path("guest_article", views.guest_article, name="guest_article"),
     path("user_questions", views.user_questions, name="user_questions"),
+    path("user_questions/submit_question", views.submit_question, name="submit_question")
 ]

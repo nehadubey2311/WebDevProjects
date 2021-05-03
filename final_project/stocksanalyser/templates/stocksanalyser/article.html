@@ -3,61 +3,52 @@
 
 {% block body %}
 <br>
-<div class="row">
-    <div class="col-8">
-        <article class="articles-section">
-            <h2>{{ article.title }}</h2>
-            <div><small>Posted by: {{ article.author }} | {{ article.created }}</small></div>
-            <br>
-            <!-- like/unlike button -->
-            <p class="like-btn unliked" id="like-{{ article.id }}" data-like="{{ article.id }}">&hearts; {{ article.likes.count }}</p>
-            <!-- Button to add/remove article to/fromz 'My Articles' -->
-            {% if not watcher %}
-                <a class="btn btn-primary" href="{% url 'stocksanalyser:add_article' article.id %}" 
-                role="button">Add to My Article</a>
-            {% else %}
-                <a class="btn btn-primary" href="{% url 'stocksanalyser:remove_article' article.id %}" 
-                role="button">Remove From My Article</a>
-            {% endif %}
-            <br><br>
-            
-            <p>{{ article.content }}</p>
-        </article>
-
-        <!-- Form to add comments when user is logged in -->
-        {% if user.is_authenticated %}
-        <form action="{% url 'stocksanalyser:comments' article.id %}" method="post">
-            {% csrf_token %}
-            {{ comment_form }}
-            <input class="my-3 btn-primary" type="submit">
-        </form>
+<article class="articles-section">
+    <h2>{{ article.title }}</h2>
+    <div><small>Posted by: {{ article.author }} | {{ article.created }}</small></div>
+    <br>
+    <!-- like/unlike button -->
+    <p class="like-btn unliked" id="like-{{ article.id }}" data-like="{{ article.id }}">&hearts; {{ article.likes.count }}</p>
+    <!-- Button to add/remove article to/fromz 'My Articles' -->
+    {% if user.is_authenticated %}
+        {% if not saved %}
+            <a class="btn btn-primary" href="{% url 'stocksanalyser:add_article' article.id %}" 
+            role="button">Add to My Article</a>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'stocksanalyser:remove_article' article.id %}" 
+            role="button">Remove From My Article</a>
         {% endif %}
+    {% endif %}
+    <br><br>
+    
+    <p>{{ article.content }}</p>
+</article>
 
-        <!-- List all comments on articles -->
-        <div class="card">
-            <div class="card-body">
-                <h2>{{ comments.count }} comments</h2>
-                {% for item in comments %}
-                    <div class="comments" style="padding: 10px;">
-                        <p class="font-weight-bold">
-                            {{ item.user }}
-                            <span class=" text-muted font-weight-normal">
-                                {{ item.time }}
-                            </span>
-                        </p>
-                        {{ item.comment | linebreaks }}
-                    </div>
-                {% endfor %}
+<!-- Form to add comments when user is logged in -->
+{% if user.is_authenticated %}
+<form action="{% url 'stocksanalyser:comments' article.id %}" method="post">
+    {% csrf_token %}
+    {{ comment_form }}
+    <input class="my-3 btn-primary" type="submit">
+</form>
+{% endif %}
+
+<!-- List all comments on articles -->
+<div class="card w-100">
+    <div class="card-body">
+        <h2>{{ comments.count }} comments</h2>
+        {% for item in comments %}
+            <div class="comments p-3">
+                <p class="font-weight-bold">
+                    {{ item.user }}
+                    <span class=" text-muted font-weight-normal">
+                        {{ item.time }}
+                    </span>
+                </p>
+                {{ item.comment | linebreaks }}
             </div>
-        </div>
-    </div>
-    <div class="col-4">
-        
+        {% endfor %}
     </div>
 </div>
     
-{% endblock %}
-
-{% block script %}
-    <script src="{% static 'stocksanalyser/stocksanalyser.js' %}"></script>
 {% endblock %}

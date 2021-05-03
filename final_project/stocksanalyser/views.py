@@ -1,14 +1,16 @@
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, get_object_or_404, get_list_or_404
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.db import IntegrityError
-from django.urls import reverse
-from django import forms
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
-from django.core.paginator import Paginator
+import json
 
-from .models import User, Article, Category, Comment
+from django import forms
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db import IntegrityError
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import Article, Comment, Question, User
 
 
 class CommentForm(forms.ModelForm):
@@ -18,6 +20,11 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
+        widgets = {
+            'comment': forms.TextInput(attrs={
+                'class': 'w-100',
+            })
+        }
 
 
 class GuestArticleForm(forms.ModelForm):
@@ -26,7 +33,7 @@ class GuestArticleForm(forms.ModelForm):
     """
     class Meta:
         model = Article
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'category']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control form-control-sm',
@@ -36,8 +43,11 @@ class GuestArticleForm(forms.ModelForm):
             })
         }
 
-# Create your views here.
+
 def index(request):
+    """
+    Render default view to users
+    """
     articles = Article.objects.all().filter(approved=True).order_by("-created")
     return render_articles_with_paginator(request, articles)
 
@@ -120,7 +130,8 @@ def render_articles_with_paginator(request, articles):
 
     # filter recommended reading articles for user
     # based on maximum likes
-    rec_readings = Article.objects.all().order_by('-likes')[:5]
+    articles = Article.objects.all()
+    rec_readings = articles.filter(approved=True).order_by('-likes')[:5]
 
     return render(request, "stocksanalyser/index.html", {
         "articles": articles,
@@ -130,29 +141,37 @@ def render_articles_with_paginator(request, articles):
 
 
 def article(request, article_id):
-    watcher = ""
+    """
+    Renders an article to the user as selected. It will
+    also update if article has been like by the user or
+    if user has already saved the article
+    """
+    saved = ""
 
     article = get_object_or_404(Article, pk=article_id)
 
-    # check if user is already watching an article
-    # 'watcher' will have a querySet if user is a watcher
+    # check if user has already saved an article
+    # 'saved' will have a querySet if user has saved it
     # else 'None'
     if request.user.id:
         user = User.objects.get(id=int(request.user.id))
-        watcher = user.watchlist.filter(id=article_id)
+        saved = user.watchlist.filter(id=article_id)
 
     return render(request, "stocksanalyser/article.html", {
         "article": article,
-        "watcher": watcher,
+        "saved": saved,
         "comment_form": CommentForm,
         "comments": Comment.objects.filter(article=article_id)
     })
 
 
 def category(request, menu_item):
+    """
+    Renders article as per menu clicked by user
+    """
     try:
-        section = get_object_or_404(Category, category=menu_item)
-        articles = Article.objects.filter(category=section.id).filter(approved=True).order_by("-created")
+        articles = Article.objects.filter(
+            category=menu_item).filter(approved=True).order_by("-created")
         return render_articles_with_paginator(request, articles)
     except:
         return render(request, "stocksanalyser/banner.html", {
@@ -182,6 +201,7 @@ def comments(request, article_id):
 
 
 @csrf_exempt
+@login_required
 def like_unlike_article(request, article_id):
     """
     End point to facilitate users to like/unlike an article
@@ -203,14 +223,17 @@ def like_unlike_article(request, article_id):
             article.likes.add(request.user.id)
         article.save()
 
-        return JsonResponse({"message": "Article updated successfully."}, status=201)
+        return JsonResponse({
+            "message": "Article updated successfully."
+            }, status=201)
     except:
         return JsonResponse({
-            "error": "Sorry, the operation could not be completed, try again !!"
+            "error": "Sorry, the operation could not be completed, try again !"
         }, status=400)
 
 
 @csrf_exempt
+@login_required
 def liked(request, article_id):
     """Returns a status if current logged in user has
     liked an article already or not and also returns how
@@ -243,6 +266,7 @@ def liked(request, article_id):
         }, status=200)
 
 
+@login_required
 def add_article(request, article_id):
     """
     This is to add an article to 'My Articles'
@@ -261,6 +285,7 @@ def add_article(request, article_id):
         })
 
 
+@login_required
 def remove_article(request, article_id):
     """
     This is to remove an article from 'My Articles'
@@ -285,13 +310,18 @@ def my_articles(request):
     Render user's 'My Articles'. This view re-uses
     index.html to only display watchlist articles.
     """
-    articles = Article.objects.filter(watchers=request.user).filter(approved=True).order_by("-created")
+    articles = Article.objects.filter(watchers=request.user) \
+        .filter(approved=True).order_by("-created")
 
     return render_articles_with_paginator(request, articles)
 
 
 @login_required
 def guest_article(request):
+    """
+    This provides the ability to users to submit an article
+    to be reviewed by admin user
+    """
     if request.method == "GET":
         return render(request, "stocksanalyser/guest_article.html", {
             "form": GuestArticleForm()
@@ -305,13 +335,51 @@ def guest_article(request):
         if form.is_valid():
             title = form.cleaned_data["title"]
             content = form.cleaned_data["content"]
+            category = form.cleaned_data["category"]
             added_by = request.user
 
-            article = Article(title=title, content=content, author=added_by)
+            article = Article(title=title, content=content,
+                              author=added_by, category=category)
             article.save()
 
             return HttpResponseRedirect(reverse("stocksanalyser:index"))
 
 
+@login_required
 def user_questions(request):
-    pass
+    """
+    This lets users submit questions on blog to be
+    answered by admin user
+    """
+    if request.method != "GET":
+        return JsonResponse({"error": "GET request required."}, status=400)
+
+    # fetch all questions/answers if any from DB
+    entries = Question.objects.all().order_by("-created")
+
+    return render(request, "stocksanalyser/user_questions.html", {
+        "entries": entries
+    })
+
+
+@csrf_exempt
+def submit_question(request):
+    """
+    Provides the ability to add user submitted questions
+    """
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    data = json.loads(request.body)
+    content = data.get("content")
+    if not content:
+        return JsonResponse({
+            "error": "Empty question cannot be created."
+        }, status=400)
+
+    question = Question(user=request.user, question=content)
+    question.save()
+
+    return JsonResponse({
+        "message": "Question created successfully."
+        }, status=201)
