@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let articleId = likeButton.dataset.like;
     // update like button count and like/unlike status
     updateLikeButton(articleId);
-  
+
     // attach event listener to like/unlike button
     likeButton.addEventListener("click", likeUnlikeArticle);
   }
@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (userQuestionPage) {
     userQuestionPage.addEventListener("click", () => submitUserQuestion());
   }
-
 });
 
 /**
@@ -77,15 +76,15 @@ function submitUserQuestion() {
       content: quesContent,
     }),
   })
-  .then((response) => response.json())
-  .then((response) => {
-    // Note: I had to use below if to throw error
-    // to be able to catch later, without doing this
-    // I was not able to cath error as thrown by backend
-    if (response.error) {
-      // throw error returned by backend
-      throw new Error(response.error);
-    }
-  })
-  .catch((error) => alert(error));
+    .then((response) => response.json())
+    .then((response) => {
+      // Note: I had to use below if to throw error
+      // to be able to catch later, without doing this
+      // I was not able to catch error as thrown by backend
+      if (response.error) {
+        // throw error returned by backend
+        throw new Error(response.error);
+      }
+    })
+    .catch((error) => alert(error));
 }

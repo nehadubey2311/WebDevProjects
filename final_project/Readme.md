@@ -1,7 +1,7 @@
 # Notes:
 * Used MySql as DB. Noted down list of steps below that needed to be done on my mac to be able to use MySql.
 * DB user/password has been stored in `settings.py` as clear text for the purposes of ease for grading the assignment.
-* Social media urls (facebook, twitter) are working with actual urls linked to them.
+* Social media urls (facebook, twitter) are working with actual urls linked to them. However those social media pages are from long time back when I actually used to write the blog and the posts on those social media pages lead to no where. I have not removed those old posts from faceboom/twitter considering them out of scope for this project.
 * Below is a list of features that any user can access:
     * Reading articles
     * Connect on social media links access
@@ -25,6 +25,7 @@ For using MySql followed below steps:
     * login to db as: mysql -u root -p password
     * create db: mysql> CREATE DATABASE blog_db;
 7. DB user/password need to be set as root/password during install else edit settings.py
+8. Once done with these steps `makemigrations` and `migrate` work exactly as for SqlLite
 
 # Description of files in project:
 ## stocksanalyser.js
@@ -65,13 +66,4 @@ For the ease of grading the assignment DB user/password is stored as clear text 
 I have decided to use static categories for articles since wanted them to be menu for the blog as well. Intentionally did not choose them to be dynamically generated and extendable from admin panel or by users visiting blog.
 
 ## Javascript pops up alerts on catching error
-When javascript catches error it would create alert pop-ups. I considered adding more intricate functionality like adding a hidden element on DOM that could display this error message instead but for the scope of this project decided to keep alert pop-ups.
-
-
-------------------------------------
-
-**5/7:**  
-- [ ] Testing, bring it together
-
-**5/9:** 
-- [ ] Submit
+When javascript catches error it would create alert pop-ups. I considered adding more intricate functionality like adding a hidden element on DOM that could display this error message instead but for the scope of this project decided to keep alert pop-ups. One of the example of such alert pop-up is when a guest user tries to like an article they would get an alert pop-up.

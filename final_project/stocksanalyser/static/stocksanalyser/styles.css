@@ -21,6 +21,12 @@
     color: grey;
 }
 
+.text-style {
+    font-size: 100%;
+    color: maroon;
+    font-weight: bold;
+}
+
 /* For setting drop down menu */
 @media all and (min-width: 992px) {
 	.navbar .nav-item .dropdown-menu{ display: none; }

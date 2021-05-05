@@ -4,7 +4,9 @@
 <html lang="en">
     <head>
         <title>{% block title %}StocksAnalyser{% endblock %}</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" 
+            crossorigin="anonymous">
         <link href="{% static 'stocksanalyser/styles.css' %}" rel="stylesheet">
         <link rel="shortcut icon" href="#">
 
@@ -16,7 +18,8 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
             <div class="container">
-                <a class="navbar-brand" href="#"> <img src="{% static 'stocksanalyser/stocks_analyser_logo.png' %}" alt="stocks_analyser_logo"> </a>
+                <a class="navbar-brand" href="#"> <img src="{% static 'stocksanalyser/stocks_analyser_logo.png' %}"
+                    alt="stocks_analyser_logo"> </a>
                 <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'stocksanalyser:index' %}"> Most Recent </a>
@@ -28,8 +31,10 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link  dropdown-toggle" href="#" data-bs-toggle="dropdown"> Learn Analysis </a>
                      <ul class="dropdown-menu">
-                       <li><a class="dropdown-item" href="{% url 'stocksanalyser:category' 'tech_analysis' %}"> Learn Technical Analysis</a></li>
-                       <li><a class="dropdown-item" href="{% url 'stocksanalyser:category' 'fund_analysis' %}"> Learn Fundamental Analysis </a></li>
+                       <li><a class="dropdown-item" href="{% url 'stocksanalyser:category' 'tech_analysis' %}"> 
+                           Learn Technical Analysis</a></li>
+                       <li><a class="dropdown-item" href="{% url 'stocksanalyser:category' 'fund_analysis' %}"> 
+                           Learn Fundamental Analysis </a></li>
                      </ul>
                 </li>
                 
@@ -40,11 +45,19 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'stocksanalyser:guest_article' %}"> Submit Articles </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stocksanalyser:user_questions' %}"> Q&A </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stocksanalyser:logout' %}"> Log Out <strong>({{ user.username }})</strong></a>
+                {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'stocksanalyser:user_questions' %}"> Q&A </a>
+                </li>
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link  dropdown-toggle" href="#" data-bs-toggle="dropdown"><strong>
+                            ({{ user.username }})</strong></a>
+                         <ul class="dropdown-menu">
+                           <li><a class="dropdown-item" href="{% url 'stocksanalyser:logout' %}"> Log Out </a></li>
+                         </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
@@ -72,8 +85,12 @@
                         <div class="card">
                             <div class="card-body text-center">
                             <h5 class="card-title">Connect with us:</h5>
-                            <a href="https://www.facebook.com/stocksanalyser" class="card-link"><img src="{% static 'stocksanalyser/fb_logo.png' %}" alt="facebook-logo"></a>
-                            <a href="https://twitter.com/stocksanalyser" class="card-link"><img src="{% static 'stocksanalyser/twitter_logo.png' %}" alt="twitter-logo"></a>
+                            <a href="https://www.facebook.com/stocksanalyser" class="card-link">
+                                <img src="{% static 'stocksanalyser/fb_logo.png' %}" alt="facebook-logo">
+                            </a>
+                            <a href="https://twitter.com/stocksanalyser" class="card-link">
+                                <img src="{% static 'stocksanalyser/twitter_logo.png' %}" alt="twitter-logo">
+                            </a>
                             </div>
                         </div>
 
@@ -84,7 +101,9 @@
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     {% for item in rec_readings %}
-                                        <li class="list-group-item"><a href="{% url 'stocksanalyser:article' item.id %}">{{ item.title }}</a></li>
+                                        <li class="list-group-item">
+                                            <a href="{% url 'stocksanalyser:article' item.id %}">{{ item.title }}</a>
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             </div>

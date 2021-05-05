@@ -201,7 +201,6 @@ def comments(request, article_id):
 
 
 @csrf_exempt
-@login_required
 def like_unlike_article(request, article_id):
     """
     End point to facilitate users to like/unlike an article
@@ -232,7 +231,6 @@ def like_unlike_article(request, article_id):
         }, status=400)
 
 
-@csrf_exempt
 @login_required
 def liked(request, article_id):
     """Returns a status if current logged in user has
@@ -345,7 +343,6 @@ def guest_article(request):
             return HttpResponseRedirect(reverse("stocksanalyser:index"))
 
 
-@login_required
 def user_questions(request):
     """
     This lets users submit questions on blog to be

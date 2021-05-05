@@ -9,7 +9,7 @@
     <br>
     <!-- like/unlike button -->
     <p class="like-btn unliked" id="like-{{ article.id }}" data-like="{{ article.id }}">&hearts; {{ article.likes.count }}</p>
-    <!-- Button to add/remove article to/fromz 'My Articles' -->
+    <!-- Button to add/remove article to/from 'My Articles' -->
     {% if user.is_authenticated %}
         {% if not saved %}
             <a class="btn btn-primary" href="{% url 'stocksanalyser:add_article' article.id %}" 

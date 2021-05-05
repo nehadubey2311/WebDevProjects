@@ -2,16 +2,25 @@
 {% load static %}
 
 {% block body %}
-    <div id="compose-ques-view">
-        <h5><span class="liked">{{ user.username }}</span> submit your investing related questions here and we will be glad to answer them best to our knowledge. Happy to help !!</h5>
-        <br>
-        <form id="compose-ques-form">
-            <div class="form-group">
-                <textarea class="form-control" id="user-ques-content" rows="3" placeholder="Enter your question here"></textarea>
-                <button type="submit" id="submit-ques-btn" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
-    </div>
+    {% if user.is_authenticated %}
+        <div id="compose-ques-view">
+            <h5><span class="text-style">{{ user.username }}</span>
+                 submit your investing related questions here and we will be glad to answer
+                  them best to our knowledge. Happy to help !!</h5>
+            <br>
+            <form id="compose-ques-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea class="form-control" id="user-ques-content" rows="3" placeholder="Enter your question here"></textarea>
+                    <button type="submit" id="submit-ques-btn" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    {% else %}
+        <div class="text-style">Register with us as a user to 
+            ask questions from our experts !!</div>
+        <br><br>
+    {% endif %}
     <!-- Display previously entered questions by users if any -->
     {% if entries %}
         <div id="prev-ques-view">
@@ -22,7 +31,8 @@
                     <div>A: {{ entry.answer }}</div>
                 <!-- If question has not been asnwered then display default text -->
                 {% else %}
-                    <div>(Thank you for submitting your question. We are finding best resources to answer this.)</div>
+                    <div>(Thank you for submitting your question. 
+                        We are finding best resources to answer this.)</div>
                 {% endif %}
                 <hr>
                 <br>
